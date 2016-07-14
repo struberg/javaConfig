@@ -28,6 +28,7 @@ import javax.config.spi.ConfigSource;
  * Base class for all our ConfigSources
  *
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
+ * @author <a href="mailto:gpetracek@apache.org">Gerhard Petracek</a>
  */
 public abstract class BaseConfigSource implements ConfigSource {
     protected Logger log = Logger.getLogger(getClass().getName());
