@@ -40,7 +40,7 @@ public class ConfigImpl implements Config {
     protected List<ConfigFilter> configFilters = new ArrayList<>();
 
     @Override
-    public String getPropertyValue(String key) {
+    public String getValue(String key) {
         for (ConfigSource configSource : configSources) {
             String value = configSource.getPropertyValue(key);
 
