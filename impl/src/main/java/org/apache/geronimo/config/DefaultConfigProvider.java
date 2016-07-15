@@ -25,12 +25,12 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.WeakHashMap;
 
-import openjavax.config.Config;
-import openjavax.config.ConfigProvider;
-import openjavax.config.spi.ConfigFilter;
-import openjavax.config.spi.ConfigSource;
-import openjavax.config.spi.ConfigSourceProvider;
-import openjavax.config.spi.PropertyFileConfig;
+import javx.config.Config;
+import javx.config.ConfigProvider;
+import javx.config.spi.ConfigFilter;
+import javx.config.spi.ConfigSource;
+import javx.config.spi.ConfigSourceProvider;
+import javx.config.spi.PropertyFileConfig;
 
 import org.apache.geronimo.config.configsource.PropertyFileConfigSourceProvider;
 import org.apache.geronimo.config.configsource.SystemEnvConfigSource;

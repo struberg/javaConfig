@@ -21,7 +21,7 @@ package org.apache.geronimo.config.configsource;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import openjavax.config.spi.ConfigSource;
+import javx.config.spi.ConfigSource;
 
 
 /**

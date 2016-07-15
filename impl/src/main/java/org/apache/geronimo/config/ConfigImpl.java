@@ -26,9 +26,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import openjavax.config.Config;
-import openjavax.config.spi.ConfigFilter;
-import openjavax.config.spi.ConfigSource;
+import javx.config.Config;
+import javx.config.spi.ConfigFilter;
+import javx.config.spi.ConfigSource;
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
