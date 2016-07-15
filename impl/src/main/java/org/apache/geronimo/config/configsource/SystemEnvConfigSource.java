@@ -21,8 +21,10 @@ package org.apache.geronimo.config.configsource;
 
 import java.util.Map;
 
+import openjavax.config.spi.ConfigSource;
+
 /**
- * {@link javax.config.spi.ConfigSource} which uses {@link System#getenv()}
+ * {@link ConfigSource} which uses {@link System#getenv()}
  * <p>
  * We also allow to write underlines _ instead of dots _ in the
  * environment via export (unix) or SET (windows)

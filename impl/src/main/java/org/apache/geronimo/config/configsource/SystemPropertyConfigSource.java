@@ -20,8 +20,10 @@ package org.apache.geronimo.config.configsource;
 
 import java.util.Map;
 
+import openjavax.config.spi.ConfigSource;
+
 /**
- * {@link javax.config.spi.ConfigSource} which uses {@link System#getProperties()}
+ * {@link ConfigSource} which uses {@link System#getProperties()}
  *
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
