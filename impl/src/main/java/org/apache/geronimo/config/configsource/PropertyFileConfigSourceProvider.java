@@ -71,7 +71,7 @@ public class PropertyFileConfigSourceProvider implements ConfigSourceProvider {
 
 
     @Override
-    public List<ConfigSource> getConfigSources() {
+    public List<ConfigSource> getConfigSources(ClassLoader forClassLoader) {
         return configSources;
     }
 }

@@ -89,7 +89,7 @@ public class DefaultConfigProvider implements ConfigProvider.SPI {
         // load all ConfigSources from ConfigSourceProviders
         ServiceLoader<ConfigSourceProvider> configSourceProviderLoader = ServiceLoader.load(ConfigSourceProvider.class, forClassLoader);
         for (ConfigSourceProvider configSourceProvider : configSourceProviderLoader) {
-            configSources.addAll(configSourceProvider.getConfigSources());
+            configSources.addAll(configSourceProvider.getConfigSources(forClassLoader));
         }
 
         ConfigImpl config = new ConfigImpl();
@@ -109,7 +109,7 @@ public class DefaultConfigProvider implements ConfigProvider.SPI {
 
         configSources.add(new SystemEnvConfigSource());
         configSources.add(new SystemPropertyConfigSource());
-        configSources.addAll(new PropertyFileConfigSourceProvider("META-INF/java-config.properties", true, forClassLoader).getConfigSources());
+        configSources.addAll(new PropertyFileConfigSourceProvider("META-INF/java-config.properties", true, forClassLoader).getConfigSources(forClassLoader));
         configSources.addAll(getCustomPropertyFiles(forClassLoader));
 
         return configSources;
@@ -119,7 +119,7 @@ public class DefaultConfigProvider implements ConfigProvider.SPI {
         List<ConfigSource> configSources = new ArrayList<>();
         ServiceLoader<PropertyFileConfig> propertyFileConfigLoader = ServiceLoader.load(PropertyFileConfig.class);
         for (PropertyFileConfig propConfig : propertyFileConfigLoader) {
-            configSources.addAll(new PropertyFileConfigSourceProvider(propConfig.getPropertyFileName(), propConfig.isOptional(), forClassLoader).getConfigSources());
+            configSources.addAll(new PropertyFileConfigSourceProvider(propConfig.getPropertyFileName(), propConfig.isOptional(), forClassLoader).getConfigSources(forClassLoader));
         }
 
         return configSources;
