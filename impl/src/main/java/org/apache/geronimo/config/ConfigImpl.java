@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javx.config.Config;
+import javx.config.ConfigValue;
 import javx.config.spi.ConfigFilter;
 import javx.config.spi.ConfigSource;
 
@@ -53,6 +54,11 @@ public class ConfigImpl implements Config {
                 return filterConfigValue(key, value);
             }
         }
+        return null;
+    }
+
+    @Override
+    public ConfigValue<String> access(String key) {
         return null;
     }
 

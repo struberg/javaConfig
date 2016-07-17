@@ -42,7 +42,8 @@ import org.apache.geronimo.config.configsource.SystemPropertyConfigSource;
  */
 public class DefaultConfigProvider implements ConfigProvider.SPI {
 
-    protected static Map<ClassLoader, WeakReference<Config>> configs = Collections.synchronizedMap(new WeakHashMap<ClassLoader, WeakReference<Config>>());
+    protected static Map<ClassLoader, WeakReference<Config>> configs
+            = Collections.synchronizedMap(new WeakHashMap<ClassLoader, WeakReference<Config>>());
 
 
     @Override
@@ -127,7 +128,7 @@ public class DefaultConfigProvider implements ConfigProvider.SPI {
 
     private void registerConfig(Config config, ClassLoader forClassLoader) {
         synchronized (DefaultConfigProvider.class) {
-            configs.put(forClassLoader, new WeakReference<Config>(config));
+            configs.put(forClassLoader, new WeakReference<>(config));
         }
     }
 
