@@ -16,6 +16,8 @@
  */
 package org.apache.geronimo.config;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +32,11 @@ import javx.config.Config;
 import javx.config.ConfigValue;
 import javx.config.spi.ConfigFilter;
 import javx.config.spi.ConfigSource;
+import javx.config.spi.Converter;
+import org.apache.geronimo.config.converters.FloatConverter;
+import org.apache.geronimo.config.converters.IntegerConverter;
+
+import javax.annotation.Priority;
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
@@ -39,6 +46,17 @@ public class ConfigImpl implements Config {
 
     protected ConfigSource[] configSources = new ConfigSource[0];
     protected List<ConfigFilter> configFilters = new ArrayList<>();
+    protected Map<Type, Converter> converters = new HashMap<>();
+
+
+    public ConfigImpl() {
+        registerDefaultConverter();
+    }
+
+    private void registerDefaultConverter() {
+        converters.put(Integer.class, IntegerConverter.INSTANCE);
+        converters.put(Float.class, FloatConverter.INSTANCE);
+    }
 
     @Override
     public String getValue(String key) {
@@ -59,7 +77,7 @@ public class ConfigImpl implements Config {
 
     @Override
     public ConfigValue<String> access(String key) {
-        return null;
+        return new ConfigValueImpl<>(this, key);
     }
 
     @Override
@@ -122,6 +140,38 @@ public class ConfigImpl implements Config {
 
     }
 
+    @Override
+    public synchronized void addConverter(Converter<?> converter) {
+        if (converter == null) {
+            return;
+        }
+
+        Type targetType = getTypeOfConverter(converter.getClass());
+        if (targetType == null ) {
+            throw new IllegalStateException("Converter " + converter.getClass() + " must be a ParameterisedType");
+        }
+
+        Converter oldConverter = converters.get(targetType);
+        if (oldConverter == null || getPriority(converter) > getPriority(oldConverter)) {
+            converters.put(targetType, converter);
+        }
+    }
+
+    private int getPriority(Converter<?> converter) {
+        int priority = 100;
+        Priority priorityAnnotation = converter.getClass().getAnnotation(Priority.class);
+        if (priorityAnnotation != null) {
+            priority = priorityAnnotation.value();
+        }
+        return priority;
+    }
+
+
+    public Map<Type, Converter> getConverters() {
+        return converters;
+    }
+
+
     protected ConfigSource[] sortDescending(List<ConfigSource> configSources) {
         Collections.sort(configSources, new Comparator<ConfigSource>() {
             @Override
@@ -131,5 +181,27 @@ public class ConfigImpl implements Config {
         });
         return configSources.toArray(new ConfigSource[configSources.size()]);
 
+    }
+
+    private Type getTypeOfConverter(Class clazz) {
+        if (clazz.equals(Object.class)) {
+            return null;
+        }
+
+        Type[] genericInterfaces = clazz.getGenericInterfaces();
+        for (Type genericInterface : genericInterfaces) {
+            if (genericInterface instanceof ParameterizedType) {
+                ParameterizedType pt = (ParameterizedType) genericInterface;
+                if (pt.getRawType().equals(Converter.class)) {
+                    Type[] typeArguments = pt.getActualTypeArguments();
+                    if (typeArguments.length != 1) {
+                        throw new IllegalStateException("Converter " + clazz + " must be a ParameterisedType");
+                    }
+                    return typeArguments[0];
+                }
+            }
+        }
+
+        return getTypeOfConverter(clazz.getSuperclass());
     }
 }

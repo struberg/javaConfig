@@ -20,6 +20,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -30,6 +31,7 @@ import javx.config.ConfigProvider;
 import javx.config.spi.ConfigFilter;
 import javx.config.spi.ConfigSource;
 import javx.config.spi.ConfigSourceProvider;
+import javx.config.spi.Converter;
 import javx.config.spi.PropertyFileConfig;
 
 import org.apache.geronimo.config.configsource.PropertyFileConfigSourceProvider;
@@ -77,9 +79,12 @@ public class DefaultConfigProvider implements ConfigProvider.SPI {
     }
 
     protected Config createConfig(ClassLoader forClassLoader) {
+        ConfigImpl config = new ConfigImpl();
+
         List<ConfigSource> configSources = new ArrayList<>();
 
         configSources.addAll(getBuiltInConfigSources(forClassLoader));
+
 
         // load all ConfigSource services
         ServiceLoader<ConfigSource> configSourceLoader = ServiceLoader.load(ConfigSource.class, forClassLoader);
@@ -93,8 +98,8 @@ public class DefaultConfigProvider implements ConfigProvider.SPI {
             configSources.addAll(configSourceProvider.getConfigSources(forClassLoader));
         }
 
-        ConfigImpl config = new ConfigImpl();
         config.addConfigSources(configSources);
+        addConverters(config, forClassLoader);
 
         // also register all ConfigFilters
         ServiceLoader<ConfigFilter> configFilterLoader = ServiceLoader.load(ConfigFilter.class, forClassLoader);
@@ -126,6 +131,13 @@ public class DefaultConfigProvider implements ConfigProvider.SPI {
         return configSources;
     }
 
+    protected void addConverters(Config config, ClassLoader forClassLoader) {
+        ServiceLoader<Converter> converters = ServiceLoader.load(Converter.class, forClassLoader);
+        for (Converter converter : converters) {
+            config.addConverter(converter);
+        }
+    }
+
     private void registerConfig(Config config, ClassLoader forClassLoader) {
         synchronized (DefaultConfigProvider.class) {
             configs.put(forClassLoader, new WeakReference<>(config));
@@ -139,6 +151,9 @@ public class DefaultConfigProvider implements ConfigProvider.SPI {
 
     @Override
     public void releaseConfig(Config config) {
-
+        Iterator<Map.Entry<ClassLoader, WeakReference<Config>>> it = configs.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<ClassLoader, WeakReference<Config>> next = it.next();
+        }
     }
 }

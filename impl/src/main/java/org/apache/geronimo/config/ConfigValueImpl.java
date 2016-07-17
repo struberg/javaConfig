@@ -1,6 +1,5 @@
 package org.apache.geronimo.config;
 
-import javx.config.Config;
 import javx.config.ConfigValue;
 import javx.config.spi.Converter;
 
@@ -39,8 +38,9 @@ public class ConfigValueImpl<T> implements ConfigValue<T> {
     private volatile long reloadAfter = -1;
     private T lastValue = null;
 
-    public ConfigValueImpl(ConfigImpl config) {
+    public ConfigValueImpl(ConfigImpl config, String key) {
         this.config = config;
+        this.keyOriginal = key;
     }
 
     @Override
@@ -159,8 +159,16 @@ public class ConfigValueImpl<T> implements ConfigValue<T> {
     }
 
     private T convert(String value) {
-        //X TODO
-        return null;
+        if (String.class == configEntryType) {
+            return (T) value;
+        }
+
+        Converter converter = config.getConverters().get(configEntryType);
+        if (converter == null) {
+            throw new IllegalStateException("No Converter for type " + configEntryType);
+        }
+
+        return (T) converter.convert(value);
     }
 
     private T fallbackToDefaultIfEmpty(String key, T value, T defaultValue) {
