@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import io.microprofile.config.Config;
+import io.microprofile.config.ConfigValue;
 import io.microprofile.config.spi.ConfigFilter;
 import io.microprofile.config.spi.ConfigSource;
 import io.microprofile.config.spi.Converter;
@@ -102,6 +103,10 @@ public class ConfigImpl implements Config {
             throw new UnsupportedOperationException("No Converter registered for class " + asType);
         }
         return converter;
+    }
+
+    public ConfigValue<String> access(String key) {
+        return new ConfigValueImpl<>(this, key);
     }
 
     @Override

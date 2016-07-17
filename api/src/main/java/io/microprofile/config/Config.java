@@ -38,6 +38,13 @@ import io.microprofile.config.spi.ConfigSource;
 public interface Config {
 
     /**
+     * Create a {@link ConfigValue} to access the underlying configuration.
+     *
+     * @param key the property key
+     */
+    ConfigValue<String> access(String key);
+
+    /**
      * Resolves the value configured for the given key.
      *
      * @param key the property key
