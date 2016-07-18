@@ -21,6 +21,8 @@ public class ConfigValueImpl<T> implements ConfigValue<T> {
 
     private Class<?> configEntryType = String.class;
 
+    private String[] lookupChain;
+
     private boolean withDefault = false;
     private T defaultValue;
 
@@ -81,8 +83,8 @@ public class ConfigValueImpl<T> implements ConfigValue<T> {
 
     @Override
     public ConfigValue<T> withLookupChain(String... postfixNames) {
-        //X TODO
-        return null;
+        this.lookupChain = postfixNames;
+        return this;
     }
 
     @Override
@@ -130,7 +132,32 @@ public class ConfigValueImpl<T> implements ConfigValue<T> {
     private String resolveStringValue() {
         //X TODO implement lookupChain
 
-        return config.getValue(keyOriginal);
+        String value = config.getValue(keyOriginal);
+        if (evaluateVariables)
+        {
+            // recursively resolve any ${varName} in the value
+            int startVar = 0;
+            while ((startVar = value.indexOf("${", startVar)) >= 0)
+            {
+                int endVar = value.indexOf("}", startVar);
+                if (endVar <= 0)
+                {
+                    break;
+                }
+                String varName = value.substring(startVar + 2, endVar);
+                if (varName.isEmpty())
+                {
+                    break;
+                }
+                String variableValue = config.access(varName).evaluateVariables(true).withLookupChain(lookupChain).getValue();
+                if (variableValue != null)
+                {
+                    value = value.replace("${" + varName + "}", variableValue);
+                }
+                startVar++;
+            }
+        }
+        return value;
     }
 
     @Override
