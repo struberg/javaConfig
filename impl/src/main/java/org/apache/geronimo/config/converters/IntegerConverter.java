@@ -21,7 +21,7 @@ import javax.annotation.Priority;
 import javx.config.spi.Converter;
 
 /**
- * @author <a href="mailto:struberg@yahoo.de">Mark Struberg</a>
+ * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
 @Priority(1)
 public class IntegerConverter implements Converter<Integer> {

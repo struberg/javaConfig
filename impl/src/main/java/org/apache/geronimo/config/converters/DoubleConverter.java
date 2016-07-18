@@ -14,46 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.geronimo.config.tck.configsources;
+package org.apache.geronimo.config.converters;
 
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import javx.config.spi.Converter;
 
-import javx.config.spi.ConfigSource;
+import javax.annotation.Priority;
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
-public class SampleYamlConfigSource implements ConfigSource {
-    private Map<String, String> config = new HashMap<>();
+@Priority(1)
+public class DoubleConverter implements Converter<Double> {
 
-    public SampleYamlConfigSource(URL url) {
-        config.put("tck.config.test.sampleyaml.key1", "yamlvalue1");
-    }
+    public static final DoubleConverter INSTANCE = new DoubleConverter();
 
     @Override
-    public int getOrdinal() {
-        return 110;
-    }
-
-    @Override
-    public Map<String, String> getProperties() {
-        return config;
-    }
-
-    @Override
-    public String getPropertyValue(String key) {
-        return config.get(key);
-    }
-
-    @Override
-    public String getConfigName() {
-        return null;
-    }
-
-    @Override
-    public boolean isScannable() {
-        return false;
+    public Double convert(String value) {
+        return value != null ? Double.valueOf(value) : null;
     }
 }

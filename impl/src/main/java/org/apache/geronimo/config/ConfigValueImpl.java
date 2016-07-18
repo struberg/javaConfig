@@ -24,9 +24,6 @@ public class ConfigValueImpl<T> implements ConfigValue<T> {
     private boolean withDefault = false;
     private T defaultValue;
 
-    private String propertyParameter;
-
-    private String parameterValue;
 
     private Converter<?> converter;
 
@@ -51,13 +48,6 @@ public class ConfigValueImpl<T> implements ConfigValue<T> {
     }
 
     @Override
-    public <N> ConfigValue<N> as(Class<N> clazz, Converter<N> converter) {
-        configEntryType = clazz;
-        this.converter = converter;
-        return (ConfigValue<N>) this;
-    }
-
-    @Override
     public ConfigValue<T> withDefault(T value) {
         defaultValue = value;
         withDefault = true;
@@ -78,7 +68,7 @@ public class ConfigValueImpl<T> implements ConfigValue<T> {
     }
 
     @Override
-    public ConfigValue<T> cacheFor(TimeUnit timeUnit, long value) {
+    public ConfigValue<T> cacheFor(long value, TimeUnit timeUnit) {
         this.cacheTimeMs = timeUnit.toMillis(value);
         return this;
     }

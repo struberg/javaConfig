@@ -33,8 +33,11 @@ import javx.config.ConfigValue;
 import javx.config.spi.ConfigFilter;
 import javx.config.spi.ConfigSource;
 import javx.config.spi.Converter;
+import org.apache.geronimo.config.converters.BooleanConverter;
+import org.apache.geronimo.config.converters.DoubleConverter;
 import org.apache.geronimo.config.converters.FloatConverter;
 import org.apache.geronimo.config.converters.IntegerConverter;
+import org.apache.geronimo.config.converters.LongConverter;
 
 import javax.annotation.Priority;
 
@@ -54,8 +57,11 @@ public class ConfigImpl implements Config {
     }
 
     private void registerDefaultConverter() {
-        converters.put(Integer.class, IntegerConverter.INSTANCE);
+        converters.put(Boolean.class, BooleanConverter.INSTANCE);
+        converters.put(Double.class, DoubleConverter.INSTANCE);
         converters.put(Float.class, FloatConverter.INSTANCE);
+        converters.put(Integer.class, IntegerConverter.INSTANCE);
+        converters.put(Long.class, LongConverter.INSTANCE);
     }
 
     @Override
