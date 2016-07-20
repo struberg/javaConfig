@@ -31,42 +31,56 @@ public class DefaultConfig implements Config {
 
     @Override
     public String getValue(final String key) {
-        String value = null;
-        for (final ConfigSource source : sources) {
-            value = source.getPropertyValue(key);
-            if (value != null) {
-                for (final ConfigFilter filter : filters) {
-                    final String decrypted = filter.filterValue(key, value);
-                    if (decrypted != null) {
-                        value = decrypted;
+        final Thread thread = Thread.currentThread();
+        final ClassLoader old = thread.getContextClassLoader();
+        thread.setContextClassLoader(loader);
+        try {
+            String value = null;
+            for (final ConfigSource source : sources) {
+                value = source.getPropertyValue(key);
+                if (value != null) {
+                    for (final ConfigFilter filter : filters) {
+                        final String decrypted = filter.filterValue(key, value);
+                        if (decrypted != null) {
+                            value = decrypted;
+                        }
+                        // continue the loop since filters can be chained
                     }
-                    // continue the loop since filters can be chained
+                    break; // we found the value, skip other sources
                 }
-                break; // we found the value, skip other sources
             }
+            return value;
+        } finally {
+            thread.setContextClassLoader(old);
         }
-        return value;
     }
 
     @Override
     public void close() {
-        for (final ConfigSource source : sources) {
-            if (AutoCloseable.class.isInstance(source)) {
-                try {
-                    AutoCloseable.class.cast(source).close();
-                } catch (Exception e) {
-                    // TODO :log
+        final Thread thread = Thread.currentThread();
+        final ClassLoader old = thread.getContextClassLoader();
+        thread.setContextClassLoader(loader);
+        try {
+            for (final ConfigSource source : sources) {
+                if (AutoCloseable.class.isInstance(source)) {
+                    try {
+                        AutoCloseable.class.cast(source).close();
+                    } catch (Exception e) {
+                        // TODO :log
+                    }
                 }
             }
-        }
-        for (final ConfigFilter filter : filters) {
-            if (AutoCloseable.class.isInstance(filter)) {
-                try {
-                    AutoCloseable.class.cast(filter).close();
-                } catch (Exception e) {
-                    // TODO :log
+            for (final ConfigFilter filter : filters) {
+                if (AutoCloseable.class.isInstance(filter)) {
+                    try {
+                        AutoCloseable.class.cast(filter).close();
+                    } catch (Exception e) {
+                        // TODO :log
+                    }
                 }
             }
+        } finally {
+            thread.setContextClassLoader(old);
         }
     }
 
