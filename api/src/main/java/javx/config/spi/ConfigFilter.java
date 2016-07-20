@@ -32,7 +32,7 @@ import javx.config.Config;
  *
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
-public interface ConfigFilter
+public interface ConfigFilter // TODO: rename it Decipher or Decrypter since it doesn't "filter"
 {
     /**
      * Filter the given configuration value
@@ -41,13 +41,4 @@ public interface ConfigFilter
      * @return the filtered value or the original input String if no filter shall be applied
      */
     String filterValue(String key, String value);
-
-    /**
-     * Filter the given configuration value for usage in logs.
-     * This might be used to mask out passwords, etc.
-     * @param key
-     * @param value
-     * @return the filtered value or the original input String if no filter shall be applied
-     */
-    String filterValueForLog(String key, String value);
 }

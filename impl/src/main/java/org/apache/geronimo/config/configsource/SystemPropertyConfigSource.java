@@ -18,8 +18,6 @@
  */
 package org.apache.geronimo.config.configsource;
 
-import java.util.Map;
-
 import javx.config.spi.ConfigSource;
 
 /**
@@ -27,23 +25,14 @@ import javx.config.spi.ConfigSource;
  *
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
-public class SystemPropertyConfigSource extends BaseConfigSource {
-    public SystemPropertyConfigSource() {
-        initOrdinal(400);
-    }
-
+public class SystemPropertyConfigSource implements ConfigSource {
     @Override
-    public Map<String, String> getProperties() {
-        return (Map) System.getProperties();
-    }
-
-    @Override
-    public String getPropertyValue(String key) {
+    public String getPropertyValue(String key) { // TODO: think to use a Map cause at runtime this is slow (lock)
         return System.getProperty(key);
     }
 
     @Override
     public String getConfigName() {
-        return "system-properties";
+        return ConfigSource.class.getPackage().getName() + ".system-properties";
     }
 }

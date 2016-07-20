@@ -16,10 +16,6 @@
  */
 package javx.config;
 
-import java.util.List;
-import java.util.Map;
-
-import javx.config.spi.ConfigFilter;
 import javx.config.spi.ConfigSource;
 import javx.config.spi.ConfigSourceProvider;
 
@@ -33,7 +29,7 @@ import javx.config.spi.ConfigSourceProvider;
  *
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
-public interface Config {
+public interface Config extends AutoCloseable {
 
     /**
      * Resolves the value configured for the given key.
@@ -46,47 +42,8 @@ public interface Config {
     String getValue(String key);
 
     /**
-     * Returns a Map of all properties from all scannable config sources. The values of the properties reflect the
-     * values that would be obtained by a call to {@link #getValue(java.lang.String)}, that is, the value of the
-     * property from the ConfigSource with the highest ordinal.
-     *
-     * @see ConfigSource#isScannable()
+     * Releases the configuration.
      */
-    Map<String, String> getAllProperties();
-
-    /**
-     * Filter the configured value.
-     * This can e.g. be used for decryption.
-     * @return the filtered value
-     */
-    String filterConfigValue(String key, String value);
-
-    /**
-     * Filter the configured value for logging.
-     * This can e.g. be used for displaying ***** instead of a real password.
-     * @return the filtered value
-     */
-    String filterConfigValueForLog(String key, String value);
-
-    /**
-     * @return all currently registered {@link ConfigSource}s
-     */
-    ConfigSource[] getConfigSources();
-
-
-    /**
-     * This method can be used for programmatically adding {@link ConfigSource}s
-     * to this very Config.
-     * It is not needed for normal 'usage' by end users, but only for Extension Developers!
-     *
-     * @param configSourcesToAdd the ConfigSources to add
-     */
-    void addConfigSources(List<ConfigSource> configSourcesToAdd);
-
-    /**
-     * Add a {@link ConfigFilter} to this very Config
-     *
-     * It is not needed for normal 'usage' by end users, but only for Extension Developers!
-     */
-    void addConfigFilter(ConfigFilter configFilterToAdd);
+    @Override
+    void close();
 }

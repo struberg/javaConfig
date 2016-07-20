@@ -43,5 +43,5 @@ public interface ConfigSourceProvider
      *
      * @return For each e.g. property file, we return a single ConfigSource or an empty list if no ConfigSource exists.
      */
-    List<ConfigSource> getConfigSources(ClassLoader forClassLoader);
+    Iterable<ConfigSource> getConfigSources(ClassLoader forClassLoader);
 }

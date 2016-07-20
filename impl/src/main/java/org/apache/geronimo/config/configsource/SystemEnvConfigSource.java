@@ -19,9 +19,9 @@
 package org.apache.geronimo.config.configsource;
 
 
-import java.util.Map;
-
 import javx.config.spi.ConfigSource;
+
+import java.util.Map;
 
 /**
  * {@link ConfigSource} which uses {@link System#getenv()}
@@ -31,22 +31,16 @@ import javx.config.spi.ConfigSource;
  *
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
-public class SystemEnvConfigSource extends BaseConfigSource {
+public class SystemEnvConfigSource implements ConfigSource {
     private Map<String, String> configValues;
 
     public SystemEnvConfigSource() {
         configValues = System.getenv();
-        initOrdinal(300);
     }
 
     @Override
     public String getConfigName() {
-        return "system_env";
-    }
-
-    @Override
-    public Map<String, String> getProperties() {
-        return configValues;
+        return ConfigSource.class.getPackage().getName() + ".environment";
     }
 
     @Override
