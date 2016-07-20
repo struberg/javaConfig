@@ -16,6 +16,8 @@
  */
 package javx.config.spi;
 
+import java.util.Set;
+
 /**
  * <p>Implement this interfaces to provide a ConfigSource.
  * A ConfigSource provides properties from a specific place, like
@@ -45,4 +47,8 @@ public interface ConfigSource {
      * @return the 'name' of the configuration source, e.g. 'property-file mylocation/myproperty.properties'
      */
     String getConfigName();
+
+    interface Listable extends ConfigSource {
+        Set<String> keys();
+    }
 }

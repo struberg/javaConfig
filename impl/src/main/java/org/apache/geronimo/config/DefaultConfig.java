@@ -56,6 +56,11 @@ public class DefaultConfig implements Config {
     }
 
     @Override
+    public ConfigSource[] getSources() {
+        return sources.toArray(new ConfigSource[sources.size()]);
+    }
+
+    @Override
     public void close() {
         final Thread thread = Thread.currentThread();
         final ClassLoader old = thread.getContextClassLoader();

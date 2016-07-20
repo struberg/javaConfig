@@ -42,6 +42,16 @@ public interface Config extends AutoCloseable {
     String getValue(String key);
 
     /**
+     * Read-only sources accessor. Can be used to be an admin tool
+     * and potentially list available keys if needed casting the relative
+     * sources to {@see javx.config.spi.ConfigSource.Listable}.
+     * The rule to have all sources listable or not is up to the client code.
+     *
+     * @return the sorted list of sources used to find values.
+     */
+    ConfigSource[] getSources();
+
+    /**
      * Releases the configuration.
      */
     @Override
