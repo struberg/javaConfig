@@ -20,6 +20,8 @@ import javx.config.spi.ConfigFilter;
 import javx.config.spi.ConfigSource;
 
 public interface ConfigBuilder {
+    ConfigBuilder ignoreDefaultSources();
+    ConfigBuilder withClassLoader(ClassLoader loader);
     ConfigBuilder withSources(ConfigSource... sources);
     ConfigBuilder withFilters(ConfigFilter... filters);
     Config build();

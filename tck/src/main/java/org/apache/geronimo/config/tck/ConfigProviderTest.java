@@ -16,16 +16,15 @@
  */
 package org.apache.geronimo.config.tck;
 
+import javx.config.Config;
+import javx.config.ConfigFactory;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Map;
 import java.util.Properties;
-
-import javx.config.Config;
-import javx.config.ConfigProvider;
-
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
@@ -38,14 +37,13 @@ public class ConfigProviderTest {
         try {
             ClassLoader tempCl = new URLClassLoader(new URL[0], this.getClass().getClassLoader());
             Thread.currentThread().setContextClassLoader(tempCl);
-            Config config = ConfigProvider.getConfig();
+            Config config = ConfigFactory.getConfig();
             Assert.assertNotNull(config);
 
-            Config config2 = ConfigProvider.getConfig(tempCl);
+            Config config2 = ConfigFactory.getConfig(tempCl);
             Assert.assertNotNull(config2);
             Assert.assertEquals(config, config2);
-        }
-        finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(oldTccl);
         }
     }
@@ -53,7 +51,7 @@ public class ConfigProviderTest {
     @Test
     public void testEnvironmentConfigSource() {
         Map<String, String> env = System.getenv();
-        Config config = ConfigProvider.getConfig();
+        Config config = ConfigFactory.getConfig();
         for (Map.Entry<String, String> envEntry : env.entrySet()) {
             Assert.assertEquals(envEntry.getValue(), config.getValue(envEntry.getKey()));
         }
@@ -62,7 +60,7 @@ public class ConfigProviderTest {
     @Test
     public void testPropertyConfigSource() {
         Properties properties = System.getProperties();
-        Config config = ConfigProvider.getConfig();
+        Config config = ConfigFactory.getConfig();
 
         for (Map.Entry<Object, Object> propEntry : properties.entrySet()) {
             Assert.assertEquals(propEntry.getValue(), config.getValue((String) propEntry.getKey()));
@@ -71,7 +69,7 @@ public class ConfigProviderTest {
 
     @Test
     public void testDynamicValueInPropertyConfigSource() {
-        Config config = ConfigProvider.getConfig();
+        Config config = ConfigFactory.getConfig();
         String configKey = "tck.config.test.systemproperty.dynamic.value";
         String configValue = "myDynamicValue;";
 
@@ -81,13 +79,13 @@ public class ConfigProviderTest {
 
     @Test
     public void testJavaConfigPropertyFilesConfigSource() {
-        Config config = ConfigProvider.getConfig();
+        Config config = ConfigFactory.getConfig();
         Assert.assertEquals(config.getValue("tck.config.test.javaconfig.properties.key1"), "VALue1");
     }
 
     @Test
     public void testNonExistingConfigKey() {
-        Config config = ConfigProvider.getConfig();
+        Config config = ConfigFactory.getConfig();
         Assert.assertNull(config.getValue("tck.config.test.keydoesnotexist"));
     }
 }

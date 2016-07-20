@@ -52,4 +52,20 @@ public class SystemEnvConfigSource implements ConfigSource {
 
         return val;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SystemEnvConfigSource that = (SystemEnvConfigSource) o;
+
+        return configValues.equals(that.configValues);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return configValues.hashCode();
+    }
 }

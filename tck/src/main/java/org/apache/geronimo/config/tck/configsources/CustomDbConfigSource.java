@@ -16,10 +16,10 @@
  */
 package org.apache.geronimo.config.tck.configsources;
 
+import javx.config.spi.ConfigSource;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import javx.config.spi.ConfigSource;
 
 /**
  * @author <a href="mailto:struberg@yahoo.de">Mark Struberg</a>
@@ -34,16 +34,6 @@ public class CustomDbConfigSource implements ConfigSource {
     }
 
     @Override
-    public int getOrdinal() {
-        return 112;
-    }
-
-    @Override
-    public Map<String, String> getProperties() {
-        return readPropertiesFromDb();
-    }
-
-    @Override
     public String getPropertyValue(String key) {
         return readPropertyFromDb(key);
     }
@@ -53,16 +43,27 @@ public class CustomDbConfigSource implements ConfigSource {
         return "customDbConfig";
     }
 
-    @Override
-    public boolean isScannable() {
-        return true;
-    }
-
     private Map<String, String> readPropertiesFromDb() {
         return configValues;
     }
 
     private String readPropertyFromDb(String key) {
         return configValues.get(key);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CustomDbConfigSource that = (CustomDbConfigSource) o;
+
+        return configValues != null ? configValues.equals(that.configValues) : that.configValues == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return configValues != null ? configValues.hashCode() : 0;
     }
 }

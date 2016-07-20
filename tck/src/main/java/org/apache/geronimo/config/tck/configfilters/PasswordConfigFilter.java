@@ -30,18 +30,19 @@ public class PasswordConfigFilter implements ConfigFilter {
         return value;
     }
 
-    @Override
-    public String filterValueForLog(String key, String value) {
-        if (value != null &&
-            (key.contains("password") || key.contains("secret"))) {
-            return "*******"; // simply star-out the password
-        }
-        return value;
-    }
-
     private String decrypt(String value) {
         // Just to modify the string.
         // In reality the 'encryption' should be a bit stronger ;)
         return value.toLowerCase();
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj != null && PasswordConfigFilter.class == obj.getClass();
     }
 }

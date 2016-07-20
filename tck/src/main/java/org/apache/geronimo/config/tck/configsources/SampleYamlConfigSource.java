@@ -16,11 +16,11 @@
  */
 package org.apache.geronimo.config.tck.configsources;
 
+import javx.config.spi.ConfigSource;
+
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-
-import javx.config.spi.ConfigSource;
 
 /**
  * @author <a href="mailto:struberg@yahoo.de">Mark Struberg</a>
@@ -30,16 +30,6 @@ public class SampleYamlConfigSource implements ConfigSource {
 
     public SampleYamlConfigSource(URL url) {
         config.put("tck.config.test.sampleyaml.key1", "yamlvalue1");
-    }
-
-    @Override
-    public int getOrdinal() {
-        return 110;
-    }
-
-    @Override
-    public Map<String, String> getProperties() {
-        return config;
     }
 
     @Override
@@ -53,7 +43,18 @@ public class SampleYamlConfigSource implements ConfigSource {
     }
 
     @Override
-    public boolean isScannable() {
-        return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SampleYamlConfigSource that = (SampleYamlConfigSource) o;
+
+        return config.equals(that.config);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return config.hashCode();
     }
 }

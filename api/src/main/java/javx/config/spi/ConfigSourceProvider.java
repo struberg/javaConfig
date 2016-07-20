@@ -18,8 +18,6 @@
  */
 package javx.config.spi;
 
-import java.util.List;
-
 /**
  * <p>Implement this interfaces to provide a ConfigSource provider which
  * is able to maintain multiple ConfigSources. This is e.g. needed if

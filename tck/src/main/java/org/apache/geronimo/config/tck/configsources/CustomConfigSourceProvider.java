@@ -30,17 +30,28 @@ import javx.config.spi.ConfigSourceProvider;
  */
 public class CustomConfigSourceProvider implements ConfigSourceProvider {
     @Override
-    public List<ConfigSource> getConfigSources(ClassLoader forClassLoader) {
-        List<ConfigSource> detectedConfigSources = new ArrayList<>();
+    public Iterable<SourceConfiguration> getConfigSources(ClassLoader forClassLoader) {
+        List<SourceConfiguration> detectedConfigSources = new ArrayList<>();
 
-        Enumeration<URL> yamlFiles = null;
+        final Enumeration<URL> yamlFiles;
         try {
             yamlFiles = forClassLoader.getResources("sampleconfig.yaml");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         while (yamlFiles.hasMoreElements()) {
-            detectedConfigSources.add(new SampleYamlConfigSource(yamlFiles.nextElement()));
+            final URL url = yamlFiles.nextElement();
+            detectedConfigSources.add(new SourceConfiguration() {
+                @Override
+                public ConfigSource source() {
+                    return new SampleYamlConfigSource(url);
+                }
+
+                @Override
+                public int ordinal() {
+                    return 110;
+                }
+            });
         }
         return detectedConfigSources;
     }

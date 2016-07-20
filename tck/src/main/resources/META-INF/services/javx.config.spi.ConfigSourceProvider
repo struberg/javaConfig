@@ -1,1 +1,2 @@
 org.apache.geronimo.config.tck.configsources.CustomConfigSourceProvider
+org.apache.geronimo.config.tck.configsources.DbProvider

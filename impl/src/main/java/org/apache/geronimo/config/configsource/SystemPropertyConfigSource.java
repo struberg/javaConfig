@@ -35,4 +35,14 @@ public class SystemPropertyConfigSource implements ConfigSource {
     public String getConfigName() {
         return ConfigSource.class.getPackage().getName() + ".system-properties";
     }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj != null && SystemPropertyConfigSource.class == obj.getClass();
+    }
 }

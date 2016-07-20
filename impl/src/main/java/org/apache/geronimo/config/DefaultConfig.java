@@ -3,6 +3,7 @@ package org.apache.geronimo.config;
 import javx.config.Config;
 import javx.config.spi.ConfigFilter;
 import javx.config.spi.ConfigSource;
+import org.apache.geronimo.config.configsource.JavaConfigConfigSource;
 import org.apache.geronimo.config.configsource.SystemEnvConfigSource;
 import org.apache.geronimo.config.configsource.SystemPropertyConfigSource;
 
@@ -14,14 +15,18 @@ public class DefaultConfig implements Config {
     private final List<ConfigSource> sources;
     private final List<ConfigFilter> filters;
 
-    public DefaultConfig(final ClassLoader loader, final List<ConfigSource> sources, final List<ConfigFilter> filters) {
+    public DefaultConfig(final ClassLoader loader, final List<ConfigSource> sources, final List<ConfigFilter> filters,
+                         final boolean ignoreDefaultSources) {
         this.loader = loader;
         this.sources = new ArrayList<>(sources);
         this.filters = new ArrayList<>(filters);
 
-        // add default sources
-        this.sources.add(0, new SystemEnvConfigSource());
-        this.sources.add(0, new SystemPropertyConfigSource());
+        if (!ignoreDefaultSources) {
+            // add default sources (reverse order to be sorted after)
+            this.sources.add(0, new JavaConfigConfigSource());
+            this.sources.add(0, new SystemEnvConfigSource());
+            this.sources.add(0, new SystemPropertyConfigSource());
+        }
     }
 
     @Override
@@ -63,5 +68,24 @@ public class DefaultConfig implements Config {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DefaultConfig that = (DefaultConfig) o;
+
+        if (!sources.equals(that.sources)) return false;
+        return filters.equals(that.filters);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = sources.hashCode();
+        result = 31 * result + filters.hashCode();
+        return result;
     }
 }
