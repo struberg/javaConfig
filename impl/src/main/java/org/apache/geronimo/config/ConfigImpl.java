@@ -62,9 +62,7 @@ public class ConfigImpl implements Config {
 
         for (int i = configSources.length; i > 0; i--) {
             ConfigSource configSource = configSources[i];
-            if (configSource.isScannable()) {
-                result.putAll(configSource.getProperties());
-            }
+            result.putAll(configSource.getProperties());
         }
 
         // now filter them

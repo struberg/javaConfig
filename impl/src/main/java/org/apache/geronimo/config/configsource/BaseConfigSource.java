@@ -63,8 +63,4 @@ public abstract class BaseConfigSource implements ConfigSource {
         }
     }
 
-    @Override
-    public boolean isScannable() {
-        return true;
-    }
 }
