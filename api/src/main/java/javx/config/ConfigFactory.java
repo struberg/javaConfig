@@ -35,4 +35,8 @@ public final class ConfigFactory {
         }
         return builder.withClassLoader(loader);
     }
+
+    public static ConfigBuilder byDefaultProvider() {
+        return byDefaultProvider(Thread.currentThread().getContextClassLoader());
+    }
 }
