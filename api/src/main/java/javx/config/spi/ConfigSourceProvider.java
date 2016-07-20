@@ -43,5 +43,10 @@ public interface ConfigSourceProvider
      *
      * @return For each e.g. property file, we return a single ConfigSource or an empty list if no ConfigSource exists.
      */
-    Iterable<ConfigSource> getConfigSources(ClassLoader forClassLoader);
+    Iterable<SourceConfiguration> getConfigSources(ClassLoader forClassLoader);
+
+    interface SourceConfiguration {
+        ConfigSource source();
+        int ordinal();
+    }
 }
