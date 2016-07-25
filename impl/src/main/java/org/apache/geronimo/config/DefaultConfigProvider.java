@@ -30,7 +30,6 @@ import javx.config.ConfigProvider;
 import javx.config.spi.ConfigFilter;
 import javx.config.spi.ConfigSource;
 import javx.config.spi.ConfigSourceProvider;
-import javx.config.spi.PropertyFileConfig;
 
 import org.apache.geronimo.config.configsource.PropertyFileConfigSourceProvider;
 import org.apache.geronimo.config.configsource.SystemEnvConfigSource;
@@ -110,17 +109,6 @@ public class DefaultConfigProvider implements ConfigProvider.SPI {
         configSources.add(new SystemEnvConfigSource());
         configSources.add(new SystemPropertyConfigSource());
         configSources.addAll(new PropertyFileConfigSourceProvider("META-INF/java-config.properties", true, forClassLoader).getConfigSources(forClassLoader));
-        configSources.addAll(getCustomPropertyFiles(forClassLoader));
-
-        return configSources;
-    }
-
-    private Collection<? extends ConfigSource> getCustomPropertyFiles(ClassLoader forClassLoader) {
-        List<ConfigSource> configSources = new ArrayList<>();
-        ServiceLoader<PropertyFileConfig> propertyFileConfigLoader = ServiceLoader.load(PropertyFileConfig.class);
-        for (PropertyFileConfig propConfig : propertyFileConfigLoader) {
-            configSources.addAll(new PropertyFileConfigSourceProvider(propConfig.getPropertyFileName(), propConfig.isOptional(), forClassLoader).getConfigSources(forClassLoader));
-        }
 
         return configSources;
     }
