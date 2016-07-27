@@ -99,7 +99,6 @@ public class ConfigImpl implements Config {
         return configSources;
     }
 
-    @Override
     public synchronized void addConfigSources(List<ConfigSource> configSourcesToAdd) {
         List<ConfigSource> allConfigSources = new ArrayList<>(Arrays.asList(configSources));
         allConfigSources.addAll(configSourcesToAdd);
@@ -108,7 +107,6 @@ public class ConfigImpl implements Config {
         configSources = sortDescending(allConfigSources);
     }
 
-    @Override
     public synchronized  void addConfigFilter(ConfigFilter configFilter) {
         configFilters.add(configFilter);
 

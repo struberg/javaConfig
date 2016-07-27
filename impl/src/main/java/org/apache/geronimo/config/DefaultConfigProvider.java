@@ -17,23 +17,12 @@
 package org.apache.geronimo.config;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.WeakHashMap;
-
 import javx.config.Config;
 import javx.config.ConfigProvider;
-import javx.config.spi.ConfigFilter;
-import javx.config.spi.ConfigSource;
-import javx.config.spi.ConfigSourceProvider;
-
-import org.apache.geronimo.config.configsource.PropertyFileConfigSourceProvider;
-import org.apache.geronimo.config.configsource.SystemEnvConfigSource;
-import org.apache.geronimo.config.configsource.SystemPropertyConfigSource;
 
 
 /**
@@ -75,42 +64,7 @@ public class DefaultConfigProvider implements ConfigProvider.SPI {
     }
 
     protected Config createConfig(ClassLoader forClassLoader) {
-        List<ConfigSource> configSources = new ArrayList<>();
-
-        configSources.addAll(getBuiltInConfigSources(forClassLoader));
-
-        // load all ConfigSource services
-        ServiceLoader<ConfigSource> configSourceLoader = ServiceLoader.load(ConfigSource.class, forClassLoader);
-        for (ConfigSource configSource : configSourceLoader) {
-            configSources.add(configSource);
-        }
-
-        // load all ConfigSources from ConfigSourceProviders
-        ServiceLoader<ConfigSourceProvider> configSourceProviderLoader = ServiceLoader.load(ConfigSourceProvider.class, forClassLoader);
-        for (ConfigSourceProvider configSourceProvider : configSourceProviderLoader) {
-            configSources.addAll(configSourceProvider.getConfigSources(forClassLoader));
-        }
-
-        ConfigImpl config = new ConfigImpl();
-        config.addConfigSources(configSources);
-
-        // also register all ConfigFilters
-        ServiceLoader<ConfigFilter> configFilterLoader = ServiceLoader.load(ConfigFilter.class, forClassLoader);
-        for (ConfigFilter configFilter : configFilterLoader) {
-            config.addConfigFilter(configFilter);
-        }
-
-        return config;
-    }
-
-    protected Collection<? extends ConfigSource> getBuiltInConfigSources(ClassLoader forClassLoader) {
-        List<ConfigSource> configSources = new ArrayList<>();
-
-        configSources.add(new SystemEnvConfigSource());
-        configSources.add(new SystemPropertyConfigSource());
-        configSources.addAll(new PropertyFileConfigSourceProvider("META-INF/java-config.properties", true, forClassLoader).getConfigSources(forClassLoader));
-
-        return configSources;
+        return newConfig().forClassLoader(forClassLoader).build();
     }
 
     private void registerConfig(Config config, ClassLoader forClassLoader) {
@@ -120,12 +74,23 @@ public class DefaultConfigProvider implements ConfigProvider.SPI {
     }
 
     @Override
-    public Config newConfig() {
-        return new ConfigImpl();
+    public ConfigProvider.ConfigBuilder newConfig() {
+        return new DefaultConfigBuilder();
     }
 
     @Override
     public void releaseConfig(Config config) {
-
+        if (config != null) {
+            synchronized (DefaultConfigProvider.class) {
+                Iterator<Map.Entry<ClassLoader, WeakReference<Config>>> it = configs.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry<ClassLoader, WeakReference<Config>> entry = it.next();
+                    if (entry.getValue().get() != null && entry.getValue().get() == config) {
+                        it.remove();
+                        break;
+                    }
+                }
+            }
+        }
     }
 }
