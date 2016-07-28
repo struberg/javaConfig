@@ -14,42 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.geronimo.config.tck.configsources;
+package org.apache.geronimo.config.converters;
 
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import javx.config.spi.Converter;
 
-import javx.config.spi.ConfigSource;
+import javax.annotation.Priority;
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
-public class SampleYamlConfigSource implements ConfigSource {
-    private Map<String, String> config = new HashMap<>();
+@Priority(1)
+public class BooleanConverter implements Converter<Boolean> {
 
-    public SampleYamlConfigSource(URL url) {
-        config.put("tck.config.test.sampleyaml.key1", "yamlvalue1");
-    }
+    public static final BooleanConverter INSTANCE = new BooleanConverter();
 
     @Override
-    public int getOrdinal() {
-        return 110;
-    }
+    public Boolean convert(String value) {
+        if (value != null) {
+            return "TRUE".equalsIgnoreCase(value)
+                || "1".equalsIgnoreCase(value)
+                || "YES".equalsIgnoreCase(value)
+                || "Y".equalsIgnoreCase(value)
+                || "JA".equalsIgnoreCase(value)
+                || "J".equalsIgnoreCase(value)
+                || "OUI".equalsIgnoreCase(value);
+        }
 
-    @Override
-    public Map<String, String> getProperties() {
-        return config;
-    }
-
-    @Override
-    public String getPropertyValue(String key) {
-        return config.get(key);
-    }
-
-    @Override
-    public String getConfigName() {
         return null;
     }
-
 }
