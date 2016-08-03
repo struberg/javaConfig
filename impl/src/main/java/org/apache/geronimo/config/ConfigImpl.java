@@ -28,10 +28,10 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javx.config.Config;
-import javx.config.spi.ConfigFilter;
-import javx.config.spi.ConfigSource;
-import javx.config.spi.Converter;
+import io.microprofile.config.Config;
+import io.microprofile.config.spi.ConfigFilter;
+import io.microprofile.config.spi.ConfigSource;
+import io.microprofile.config.spi.Converter;
 import org.apache.geronimo.config.converters.BooleanConverter;
 import org.apache.geronimo.config.converters.DoubleConverter;
 import org.apache.geronimo.config.converters.FloatConverter;

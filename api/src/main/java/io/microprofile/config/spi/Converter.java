@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javx.config.spi;
+package io.microprofile.config.spi;
 
 /**
  * <p>A very simple interface for conversion of configuration values from String to any Java type.</p>

@@ -15,11 +15,11 @@
 // limitations under the License.
 //
 
-# Configuration for Java SE and EE JSR
+# Configuration for Java SE and EE
 
 ## Status
 
-JSR proposal!
+Microprofile proposal!
 
 == Rational
 
@@ -35,6 +35,7 @@ But be able to overwrite those default values from external.
 This very configuration approach has it's roots in the Apache OpenWebBeans internal SPI configuration.
 In 2010 it got moved over to the Apache MyFaces CODI project and enhanced to also fit the need of customer projects by Gerhard Petracek and Mark Struberg.
 In 2012 we further enhanced it while moving CODI to the Apache DeltaSpike project.
+Romain Manni-Bucau (Apache/Tomitribe), Ron Smeral (JBoss) and Anatole Tresch also gave appreciated input in the last years.
 
 == How it works
 
@@ -60,4 +61,4 @@ An example would be a ConfigSource which gets the configured values from a share
 
 `$> mvn clean install`
 
-After that the specification PDF can be found in `spec/target/generated-docs/config-spec.pdf`
+After that the specification PDF can be found in `spec/target/generated-docs/microprofile-config-spec.pdf`

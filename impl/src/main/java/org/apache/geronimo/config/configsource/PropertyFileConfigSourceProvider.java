@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javx.config.spi.ConfigSource;
-import javx.config.spi.ConfigSourceProvider;
+import io.microprofile.config.spi.ConfigSource;
+import io.microprofile.config.spi.ConfigSourceProvider;
 
 
 /**

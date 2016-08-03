@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package javx.config;
+package io.microprofile.config;
 
 import java.util.Map;
 
-import javx.config.spi.ConfigSource;
-import javx.config.spi.ConfigSourceProvider;
+import io.microprofile.config.spi.ConfigSourceProvider;
+import io.microprofile.config.spi.Converter;
+import io.microprofile.config.spi.ConfigSource;
 
 /**
  * <p>Resolves configured values of properties by going through the list
@@ -53,14 +54,14 @@ public interface Config {
      * @param asType Also support parameterized Types?
      * @param <T>
      * @return
-     * @throws UnsupportedOperationException if there is no {@link javx.config.spi.Converter} registered for asType
+     * @throws UnsupportedOperationException if there is no {@link Converter} registered for asType
      */
     <T> T getValue(String key, Class<T> asType);
 
     /**
      * Apply the
      * @return the String converted
-     * @throws UnsupportedOperationException if there is no {@link javx.config.spi.Converter} registered for asType
+     * @throws UnsupportedOperationException if there is no {@link Converter} registered for asType
      */
     <T> T convert(String value, Class<T> asType);
 

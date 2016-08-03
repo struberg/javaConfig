@@ -28,10 +28,10 @@ This might be different REST endpoints to talk with (e.g. depending on the custo
 Or it might even be different features which need to be switched on and off depending on the installation.
 All this must be possible without the need to re-package the whole application binary.
 
-Java-config provides a way to achieve this goal by aggregating configuration from many different sources and presents a single merged view to the user.
+Microprofile-Config provides a way to achieve this goal by aggregating configuration from many different sources and presents a single merged view to the user.
 This allows the application to bundle default configuration within the application.
 It also allows to override the defaults from outside, e.g. via an environment variable a Java system property or via Docker.
-Java-config also allows to implement and register own configuration sources in a portable way, e.g. for reading configuration values from a shared database in an application cluster.
+Microprofile-Config also allows to implement and register own configuration sources in a portable way, e.g. for reading configuration values from a shared database in an application cluster.
 
 === Accessing a certain Configuration
 
@@ -63,7 +63,7 @@ Any subsequent call to `ConfigProvider#getConfig()` or `ConfigProvider#getConfig
 
 === Configuration Lookup Mechanism Example
 
-The core Java-config mechanism is purely String/String based.
+The core Microprofile-Config mechanism is purely String/String based.
 Type-safety is only provided on top of that by using the proper `Converter` before handing the value out to the caller.
 
 The configuration key might use dot-separated namespaces similar to Java package namespacing:

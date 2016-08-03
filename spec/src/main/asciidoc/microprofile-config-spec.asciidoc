@@ -15,7 +15,7 @@
 // limitations under the License.
 //
 
-= JSR XXX: Configuration for Java
+= Configuration for Microprofile
 :author: Mark Struberg
 :email: struberg@apache.org
 :revnumber: 0.1

@@ -41,7 +41,7 @@ com.acme.myproject.someserver.url = http://more_important.server/some/endpoint
 
 === Default ConfigSources
 
-A Java-config implementation must provide `ConfigSource` s for the following data out of the box:
+A Microprofile-Config implementation must provide `ConfigSource` s for the following data out of the box:
 
 * System properties (ordinal=400)
 * Environment properties (ordinal=300)
@@ -51,7 +51,7 @@ A Java-config implementation must provide `ConfigSource` s for the following dat
 
 `ConfigSource` s are discovered using the `java.util.ServiceLoader` mechanism.
 
-To add a custom `ConfigSource`, implement the interface `javx.config.spi.ConfigSource`.
+To add a custom `ConfigSource`, implement the interface `io.microprofile.config.spi.ConfigSource`.
 
 [source, java]
 ----
@@ -82,7 +82,7 @@ public class CustomDbConfigSource implements ConfigSource {
 
 ----
 
-Then register your implementation in a resource file `/META-INF/services/javx.config.spi.ConfigSource` by including the fully-qualified class name of the custom implementation in the file.
+Then register your implementation in a resource file `/META-INF/services/io.microprofile.config.spi.ConfigSource` by including the fully-qualified class name of the custom implementation in the file.
 
 
 === Custom ConfigSources via ConfigSourceProvider
@@ -91,15 +91,15 @@ If you need dynamic `ConfigSource` s you can also register a `ConfigSourceProvid
 This is useful if you are required to dynamically pick up multiple `ConfigSource` s of the same kind;
 for example, to pick up all `myproject.properties` resources from all the JARs in your classpath.
 
-A custom `ConfigSourceProvider` must implement the interface `javx.config.spi.ConfigSourceProvider`.
-Register your implementation in a resource file `/META-INF/services/javx.config.spi.ConfigSourceProvider` by including the fully-qualified class name of the custom implementation/s in the file.
+A custom `ConfigSourceProvider` must implement the interface `io.microprofile.config.spi.ConfigSourceProvider`.
+Register your implementation in a resource file `/META-INF/services/io.microprofile.config.spi.ConfigSourceProvider` by including the fully-qualified class name of the custom implementation/s in the file.
 
 An example which registers all YAML files with the name `exampleconfig.yaml`:
 
 [source, java]
 ----
 public class ExampleYamlConfigSourceProvider
-        implements javx.config.spi.ConfigSourceProvider {
+        implements io.microprofile.config.spi.ConfigSourceProvider {
     @Override
     public List<ConfigSource> getConfigSources(ClassLoader forClassLoader) {
         List<ConfigSource> configSources = new ArrayList<>();

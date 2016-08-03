@@ -16,7 +16,7 @@
  */
 package org.apache.geronimo.config.tck.configfilters;
 
-import javx.config.spi.ConfigFilter;
+import io.microprofile.config.spi.ConfigFilter;
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>

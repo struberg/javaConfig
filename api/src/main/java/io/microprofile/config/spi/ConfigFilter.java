@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package javx.config.spi;
+package io.microprofile.config.spi;
 
-import javx.config.Config;
+import io.microprofile.config.Config;
 
 /**
  * <p>A filter which can be added to the

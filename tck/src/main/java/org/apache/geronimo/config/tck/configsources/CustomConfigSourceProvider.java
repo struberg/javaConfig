@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import javx.config.spi.ConfigSource;
-import javx.config.spi.ConfigSourceProvider;
+import io.microprofile.config.spi.ConfigSource;
+import io.microprofile.config.spi.ConfigSourceProvider;
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>

@@ -16,7 +16,7 @@
  */
 package org.apache.geronimo.config.tck.converters;
 
-import javx.config.spi.Converter;
+import io.microprofile.config.spi.Converter;
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>

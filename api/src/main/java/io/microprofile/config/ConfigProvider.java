@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package javx.config;
+package io.microprofile.config;
 
 import java.util.ServiceLoader;
 import java.util.logging.Logger;
 
-import javx.config.spi.ConfigFilter;
-import javx.config.spi.ConfigSource;
+import io.microprofile.config.spi.ConfigFilter;
+import io.microprofile.config.spi.ConfigSource;
 
 /**
  * <p>This is the central class to access a {@link Config}.</p>

@@ -20,7 +20,7 @@ package org.apache.geronimo.config.configsource;
 
 import java.util.Map;
 
-import javx.config.spi.ConfigSource;
+import io.microprofile.config.spi.ConfigSource;
 
 /**
  * {@link ConfigSource} which uses {@link System#getProperties()}

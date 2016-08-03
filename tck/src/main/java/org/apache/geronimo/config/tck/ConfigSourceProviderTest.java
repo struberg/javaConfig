@@ -16,8 +16,8 @@
  */
 package org.apache.geronimo.config.tck;
 
-import javx.config.Config;
-import javx.config.ConfigProvider;
+import io.microprofile.config.Config;
+import io.microprofile.config.ConfigProvider;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

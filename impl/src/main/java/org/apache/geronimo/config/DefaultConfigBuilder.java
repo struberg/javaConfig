@@ -16,11 +16,11 @@
  */
 package org.apache.geronimo.config;
 
-import javx.config.Config;
-import javx.config.ConfigProvider;
-import javx.config.spi.ConfigFilter;
-import javx.config.spi.ConfigSource;
-import javx.config.spi.ConfigSourceProvider;
+import io.microprofile.config.Config;
+import io.microprofile.config.ConfigProvider;
+import io.microprofile.config.spi.ConfigFilter;
+import io.microprofile.config.spi.ConfigSource;
+import io.microprofile.config.spi.ConfigSourceProvider;
 import org.apache.geronimo.config.configsource.PropertyFileConfigSourceProvider;
 import org.apache.geronimo.config.configsource.SystemEnvConfigSource;
 import org.apache.geronimo.config.configsource.SystemPropertyConfigSource;

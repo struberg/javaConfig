@@ -22,7 +22,7 @@ A `ConfigFilter` acts as a valve which is able to modify the configured values b
 
 An implementation of the specification is not required to ship with any `ConfigFilters` enabled by default.
 
-A custom `ConfigFilter` must implement the interface `javx.config.spi.ConfigFilter` and is typically registered in a classpath resource `/META-INF/services/javx.config.spi.ConfigFilter` by including the fully-qualified class name of the custom implementation (well-known Java SE `java.util.ServiceLoader` mechanism).
+A custom `ConfigFilter` must implement the interface `io.microprofile.config.spi.ConfigFilter` and is typically registered in a classpath resource `/META-INF/services/io.microprofile.config.spi.ConfigFilter` by including the fully-qualified class name of the custom implementation (well-known Java SE `java.util.ServiceLoader` mechanism).
 
 Alternatively a user can register a `ConfigFilter` manually via `void Config#addConfigFilter(ConfigFilter configFilterToAdd)`.
 

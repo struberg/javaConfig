@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
-import javx.config.Config;
-import javx.config.ConfigProvider;
+import io.microprofile.config.Config;
+import io.microprofile.config.ConfigProvider;
 
 
 /**

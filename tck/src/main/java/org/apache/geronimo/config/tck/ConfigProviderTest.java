@@ -21,8 +21,8 @@ import java.net.URLClassLoader;
 import java.util.Map;
 import java.util.Properties;
 
-import javx.config.Config;
-import javx.config.ConfigProvider;
+import io.microprofile.config.Config;
+import io.microprofile.config.ConfigProvider;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
