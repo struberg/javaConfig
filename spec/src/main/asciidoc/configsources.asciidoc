@@ -104,8 +104,8 @@ public class ExampleYamlConfigSourceProvider
     public List<ConfigSource> getConfigSources(ClassLoader forClassLoader) {
         List<ConfigSource> configSources = new ArrayList<>();
 
-        Enumeration<URL> yamlFiles = null;
-        yamlFiles = forClassLoader.getResources("sampleconfig.yaml");
+        Enumeration<URL> yamlFiles
+            = forClassLoader.getResources("sampleconfig.yaml");
         while (yamlFiles.hasMoreElements()) {
             configSources.add(new SampleYamlConfigSource(yamlFiles.nextElement()));
         }
