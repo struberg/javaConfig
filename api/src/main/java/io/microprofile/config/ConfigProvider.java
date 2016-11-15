@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 
 import io.microprofile.config.spi.ConfigFilter;
 import io.microprofile.config.spi.ConfigSource;
+import io.microprofile.config.spi.Converter;
 
 /**
  * <p>This is the central class to access a {@link Config}.</p>
@@ -109,6 +110,7 @@ public class ConfigProvider {
         ConfigBuilder forClassLoader(ClassLoader loader);
         ConfigBuilder withSources(ConfigSource... sources);
         ConfigBuilder withFilters(ConfigFilter... filters);
+        ConfigBuilder withConverters(Converter<?>... filters);
         Config build();
     }
 

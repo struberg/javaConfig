@@ -21,6 +21,7 @@ import io.microprofile.config.ConfigProvider;
 import io.microprofile.config.spi.ConfigFilter;
 import io.microprofile.config.spi.ConfigSource;
 import io.microprofile.config.spi.ConfigSourceProvider;
+import io.microprofile.config.spi.Converter;
 import org.apache.geronimo.config.configsource.PropertyFileConfigSourceProvider;
 import org.apache.geronimo.config.configsource.SystemEnvConfigSource;
 import org.apache.geronimo.config.configsource.SystemPropertyConfigSource;
@@ -40,6 +41,7 @@ public class DefaultConfigBuilder implements ConfigProvider.ConfigBuilder {
     private ClassLoader forClassLoader;
     private final List<ConfigSource> sources = new ArrayList<>();
     private final List<ConfigFilter> filters = new ArrayList<>();
+    private final List<Converter<?>> converters = new ArrayList<>();
     private boolean ignoreDefaultSources = false;
 
     @Override
@@ -63,6 +65,12 @@ public class DefaultConfigBuilder implements ConfigProvider.ConfigBuilder {
     @Override
     public ConfigProvider.ConfigBuilder withFilters(final ConfigFilter... filters) {
         this.filters.addAll(asList(filters));
+        return this;
+    }
+
+    @Override
+    public ConfigProvider.ConfigBuilder withConverters(Converter<?>... converters) {
+        this.converters.addAll(asList(converters));
         return this;
     }
 
@@ -98,6 +106,10 @@ public class DefaultConfigBuilder implements ConfigProvider.ConfigBuilder {
 
         for (ConfigFilter filter : filters) {
             config.addConfigFilter(filter);
+        }
+
+        for (Converter<?> converter : converters) {
+            config.addConverter(converter);
         }
 
         return config;
