@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.geronimo.config.tck.converters;
+package io.microprofile.config.tck.converters;
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>

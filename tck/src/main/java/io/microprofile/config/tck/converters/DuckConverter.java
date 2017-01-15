@@ -14,22 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.geronimo.config.tck;
+package io.microprofile.config.tck.converters;
 
-import io.microprofile.config.Config;
-import io.microprofile.config.ConfigProvider;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import io.microprofile.config.spi.Converter;
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
-public class CustomConfigSourceTest {
+public class DuckConverter implements Converter<Duck> {
 
-    @Test
-    public void testConfigSourceProvider() {
-        Config config = ConfigProvider.getConfig();
-
-        Assert.assertEquals(config.getValue("tck.config.test.customDbConfig.key1"), "valueFromDb1");
+    @Override
+    public Duck convert(String value) {
+        return new Duck(value);
     }
 }

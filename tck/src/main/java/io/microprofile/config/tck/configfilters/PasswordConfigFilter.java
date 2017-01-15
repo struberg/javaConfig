@@ -14,17 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.geronimo.config.tck.converters;
+package io.microprofile.config.tck.configfilters;
 
-import io.microprofile.config.spi.Converter;
+import io.microprofile.config.spi.ConfigFilter;
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
-public class DuckConverter implements Converter<Duck> {
+public class PasswordConfigFilter implements ConfigFilter {
+    @Override
+    public String filterValue(String key, String value) {
+        if (value != null && key.endsWith(".password")) {
+            return decrypt(value);
+        }
+        return value;
+    }
 
     @Override
-    public Duck convert(String value) {
-        return new Duck(value);
+    public String filterValueForLog(String key, String value) {
+        if (value != null &&
+            (key.contains("password") || key.contains("secret"))) {
+            return "*******"; // simply star-out the password
+        }
+        return value;
+    }
+
+    private String decrypt(String value) {
+        // Just to modify the string.
+        // In reality the 'encryption' should be a bit stronger ;)
+        return value.toLowerCase();
     }
 }

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.geronimo.config.tck.configsources;
+package io.microprofile.config.tck.configsources;
 
 import java.util.HashMap;
 import java.util.Map;

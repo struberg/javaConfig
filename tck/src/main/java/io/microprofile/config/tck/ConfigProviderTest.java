@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.geronimo.config.tck;
+package io.microprofile.config.tck;
 
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -24,7 +24,7 @@ import java.util.Properties;
 import io.microprofile.config.Config;
 import io.microprofile.config.ConfigProvider;
 
-import org.apache.geronimo.config.tck.configsources.SampleYamlConfigSource;
+import io.microprofile.config.tck.configsources.SampleYamlConfigSource;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

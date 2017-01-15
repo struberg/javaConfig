@@ -17,4 +17,4 @@
 # under the License.
 #
 
-org.apache.geronimo.config.tck.configsources.CustomDbConfigSource
+io.microprofile.config.tck.configsources.CustomDbConfigSource

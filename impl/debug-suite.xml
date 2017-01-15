@@ -24,7 +24,7 @@
     <classes>
         <!-- Issues in the spec -->
         <!-- CDI-437 -->
-        <class name="org.apache.geronimo.config.tck.ConfigProviderTest">
+        <class name="io.microprofile.config.tck.ConfigProviderTest">
             <methods>
                 <include name=".*"/>
             </methods>

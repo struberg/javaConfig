@@ -17,4 +17,4 @@
 # under the License.
 #
 
-org.apache.geronimo.config.tck.configfilters.PasswordConfigFilter
+io.microprofile.config.tck.configfilters.PasswordConfigFilter

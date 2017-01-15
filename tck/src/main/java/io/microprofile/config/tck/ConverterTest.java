@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.geronimo.config.tck;
+package io.microprofile.config.tck;
 
 import io.microprofile.config.Config;
 import io.microprofile.config.ConfigProvider;
@@ -24,25 +24,23 @@ import org.testng.annotations.Test;
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
-public class ConfigFilterTest {
+public class ConverterTest {
 
     @Test
-    public void testConfigFiltering() {
+    public void testIntegerConverter() {
         Config config = ConfigProvider.getConfig();
+        Integer value = config.getValue("tck.config.test.javaconfig.converter.integervalue", Integer.class);
+        Assert.assertEquals(value, Integer.valueOf(1234));
 
-        // unfiltered
-        Assert.assertEquals(config.getValue("tck.config.test.javaconfig.configfilter.my.secret"), "SOME_SECRET");
-
-        // filtered
-        Assert.assertEquals(config.getValue("tck.config.test.javaconfig.configfilter.my.password"), "some_password");
     }
 
     @Test
-    public void testConfigFiltering_ForLogging() {
+    public void testFloatConverter() {
         Config config = ConfigProvider.getConfig();
+        Float value = config.getValue("tck.config.test.javaconfig.converter.floatvalue", Float.class);
+        Assert.assertEquals(value, Float.valueOf(12.34f));
 
-        Assert.assertEquals(
-                config.filterConfigValueForLog("tck.config.test.javaconfig.configfilter.my.password",
-                        config.getValue("tck.config.test.javaconfig.configfilter.my.password")), "*******");
     }
+
+
 }

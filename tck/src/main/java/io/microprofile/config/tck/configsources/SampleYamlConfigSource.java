@@ -14,34 +14,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.geronimo.config.tck.configfilters;
+package io.microprofile.config.tck.configsources;
 
-import io.microprofile.config.spi.ConfigFilter;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import io.microprofile.config.spi.ConfigSource;
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
-public class PasswordConfigFilter implements ConfigFilter {
-    @Override
-    public String filterValue(String key, String value) {
-        if (value != null && key.endsWith(".password")) {
-            return decrypt(value);
-        }
-        return value;
+public class SampleYamlConfigSource implements ConfigSource {
+    private Map<String, String> config = new HashMap<>();
+
+    public SampleYamlConfigSource(URL url) {
+        config.put("tck.config.test.sampleyaml.key1", "yamlvalue1");
     }
 
     @Override
-    public String filterValueForLog(String key, String value) {
-        if (value != null &&
-            (key.contains("password") || key.contains("secret"))) {
-            return "*******"; // simply star-out the password
-        }
-        return value;
+    public int getOrdinal() {
+        return 110;
     }
 
-    private String decrypt(String value) {
-        // Just to modify the string.
-        // In reality the 'encryption' should be a bit stronger ;)
-        return value.toLowerCase();
+    @Override
+    public Map<String, String> getProperties() {
+        return config;
     }
+
+    @Override
+    public String getPropertyValue(String key) {
+        return config.get(key);
+    }
+
+    @Override
+    public String getConfigName() {
+        return null;
+    }
+
 }

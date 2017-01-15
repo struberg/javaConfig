@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.geronimo.config.tck;
+package io.microprofile.config.tck;
 
 import io.microprofile.config.Config;
 import io.microprofile.config.ConfigProvider;
@@ -24,12 +24,12 @@ import org.testng.annotations.Test;
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
-public class ConfigSourceProviderTest {
+public class CustomConfigSourceTest {
 
     @Test
     public void testConfigSourceProvider() {
         Config config = ConfigProvider.getConfig();
 
-        Assert.assertEquals(config.getValue("tck.config.test.sampleyaml.key1"), "yamlvalue1");
+        Assert.assertEquals(config.getValue("tck.config.test.customDbConfig.key1"), "valueFromDb1");
     }
 }
