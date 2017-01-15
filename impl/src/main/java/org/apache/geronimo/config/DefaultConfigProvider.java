@@ -59,7 +59,7 @@ public class DefaultConfigProvider implements ConfigProvider.SPI {
         return config;
     }
 
-    private Config existingConfig(ClassLoader forClassLoader) {
+    Config existingConfig(ClassLoader forClassLoader) {
         WeakReference<Config> configRef = configs.get(forClassLoader);
         return configRef != null ? configRef.get() : null;
     }
@@ -68,7 +68,7 @@ public class DefaultConfigProvider implements ConfigProvider.SPI {
         return newConfig().forClassLoader(forClassLoader).build();
     }
 
-    private void registerConfig(Config config, ClassLoader forClassLoader) {
+    void registerConfig(Config config, ClassLoader forClassLoader) {
         synchronized (DefaultConfigProvider.class) {
             configs.put(forClassLoader, new WeakReference<>(config));
         }
@@ -77,6 +77,11 @@ public class DefaultConfigProvider implements ConfigProvider.SPI {
     @Override
     public ConfigProvider.ConfigBuilder newConfig() {
         return new DefaultConfigBuilder();
+    }
+
+    @Override
+    public ConfigProvider.ConfigBuilder registerConfig() {
+        return new ManualApplicationConfigBuilder(this);
     }
 
     @Override

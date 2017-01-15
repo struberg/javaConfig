@@ -38,7 +38,7 @@ import static java.util.Arrays.asList;
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
 public class DefaultConfigBuilder implements ConfigProvider.ConfigBuilder {
-    private ClassLoader forClassLoader;
+    protected ClassLoader forClassLoader;
     private final List<ConfigSource> sources = new ArrayList<>();
     private final List<ConfigFilter> filters = new ArrayList<>();
     private final List<Converter<?>> converters = new ArrayList<>();
@@ -78,7 +78,9 @@ public class DefaultConfigBuilder implements ConfigProvider.ConfigBuilder {
     public Config build() {
         List<ConfigSource> configSources = new ArrayList<>();
 
-        configSources.addAll(getBuiltInConfigSources(forClassLoader));
+        if (!ignoreDefaultSources) {
+            configSources.addAll(getBuiltInConfigSources(forClassLoader));
+        }
         configSources.addAll(sources);
 
         if (!ignoreDefaultSources) {

@@ -24,6 +24,7 @@ import java.util.Properties;
 import io.microprofile.config.Config;
 import io.microprofile.config.ConfigProvider;
 
+import org.apache.geronimo.config.tck.configsources.SampleYamlConfigSource;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -91,6 +92,45 @@ public class ConfigProviderTest {
         Assert.assertNull(config.getValue("tck.config.test.keydoesnotexist"));
     }
 
+    @Test
+    public void testRegisterManualConfig() {
+        // make sure we get a clean config
+        ConfigProvider.releaseConfig(ConfigProvider.getConfig());
+
+        ConfigProvider.registerConfig()
+                .ignoreDefaultSources()
+                .withSources(new SampleYamlConfigSource(null))
+                .build();
+
+        Config config = ConfigProvider.getConfig();
+        Assert.assertNotNull(config);
+        Assert.assertNotNull(config.getConfigSources());
+        Assert.assertEquals(1, config.getConfigSources().length);
+        Assert.assertEquals(SampleYamlConfigSource.class, config.getConfigSources()[0].getClass());
+
+        Assert.assertEquals("yamlvalue1", config.getValue("tck.config.test.sampleyaml.key1"));
+
+        Assert.assertNull(config.getValue("tck.config.test.javaconfig.properties.key1"));
+
+        {
+            // try it again, Sam
+            // this time we should fail as we already have a Config registered for this application
+            try {
+                ConfigProvider.registerConfig()
+                        .ignoreDefaultSources()
+                        .withSources(new SampleYamlConfigSource(null))
+                        .build();
+
+                Assert.fail("We fail because subsequently registering another Config for the application is not allowed");
+            }
+            catch (IllegalStateException ise) {
+                // all fine
+            }
+        }
+
+        // clean up the dirt afterwards
+        ConfigProvider.releaseConfig(ConfigProvider.getConfig());
+    }
 
     @Test
     public void testConfigProviderRelease() {
