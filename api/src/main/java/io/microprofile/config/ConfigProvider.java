@@ -63,7 +63,7 @@ public class ConfigProvider {
      * Provide a {@link Config} based on all {@link ConfigSource}s
      * of the current Thread Context ClassLoader (TCCL)
      *
-     * <p>There is exactly a single Config instance per ClassLoader</p>
+     * <p>There is exactly a single Config instance per Application</p>
      */
     public static Config getConfig() {
         return instance.getConfig();
@@ -73,7 +73,7 @@ public class ConfigProvider {
      * Provide a {@link Config} based on all {@link ConfigSource}s
      * of the given ClassLoader.
      *
-     * <p>There is exactly a single Config instance per ClassLoader</p>
+     * <p>There is exactly a single Config instance per Application. The Application get's identified via a ClassLoader</p>
      */
     public static Config getConfig(ClassLoader forClassLoader) {
         return instance.getConfig(forClassLoader);
@@ -85,7 +85,8 @@ public class ConfigProvider {
      * {@link ConfigSource} nor any {@link ConfigFilter}.
      * Those have to be added manually.
      *
-     * The ConfigProvider will not manage the Config instance internally
+     * The ConfigProvider will not manage the Config instance internally.
+     * That means that {@link #getConfig()} does not pick up a Config created that way.
      */
     public static ConfigBuilder newConfig() {
         return instance.newConfig();
