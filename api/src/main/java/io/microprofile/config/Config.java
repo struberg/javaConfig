@@ -80,20 +80,6 @@ public interface Config {
     Map<String, String> getAllProperties();
 
     /**
-     * Filter the configured value.
-     * This can e.g. be used for decryption.
-     * @return the filtered value
-     */
-    String filterConfigValue(String key, String value);
-
-    /**
-     * Filter the configured value for logging.
-     * This can e.g. be used for displaying ***** instead of a real password.
-     * @return the filtered value
-     */
-    String filterConfigValueForLog(String key, String value);
-
-    /**
      * @return all currently registered {@link ConfigSource}s
      */
     ConfigSource[] getConfigSources();

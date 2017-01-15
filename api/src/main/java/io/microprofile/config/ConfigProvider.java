@@ -19,7 +19,6 @@ package io.microprofile.config;
 import java.util.ServiceLoader;
 import java.util.logging.Logger;
 
-import io.microprofile.config.spi.ConfigFilter;
 import io.microprofile.config.spi.ConfigSource;
 import io.microprofile.config.spi.Converter;
 
@@ -122,7 +121,6 @@ public class ConfigProvider {
         ConfigBuilder ignoreDefaultSources();
         ConfigBuilder forClassLoader(ClassLoader loader);
         ConfigBuilder withSources(ConfigSource... sources);
-        ConfigBuilder withFilters(ConfigFilter... filters);
         ConfigBuilder withConverters(Converter<?>... filters);
         Config build();
     }

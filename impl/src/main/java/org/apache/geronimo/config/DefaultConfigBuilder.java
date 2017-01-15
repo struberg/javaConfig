@@ -18,7 +18,6 @@ package org.apache.geronimo.config;
 
 import io.microprofile.config.Config;
 import io.microprofile.config.ConfigProvider;
-import io.microprofile.config.spi.ConfigFilter;
 import io.microprofile.config.spi.ConfigSource;
 import io.microprofile.config.spi.ConfigSourceProvider;
 import io.microprofile.config.spi.Converter;
@@ -40,7 +39,6 @@ import static java.util.Arrays.asList;
 public class DefaultConfigBuilder implements ConfigProvider.ConfigBuilder {
     protected ClassLoader forClassLoader;
     private final List<ConfigSource> sources = new ArrayList<>();
-    private final List<ConfigFilter> filters = new ArrayList<>();
     private final List<Converter<?>> converters = new ArrayList<>();
     private boolean ignoreDefaultSources = false;
 
@@ -59,12 +57,6 @@ public class DefaultConfigBuilder implements ConfigProvider.ConfigBuilder {
     @Override
     public ConfigProvider.ConfigBuilder withSources(final ConfigSource... sources) {
         this.sources.addAll(asList(sources));
-        return this;
-    }
-
-    @Override
-    public ConfigProvider.ConfigBuilder withFilters(final ConfigFilter... filters) {
-        this.filters.addAll(asList(filters));
         return this;
     }
 
@@ -99,16 +91,6 @@ public class DefaultConfigBuilder implements ConfigProvider.ConfigBuilder {
 
         ConfigImpl config = new ConfigImpl();
         config.addConfigSources(configSources);
-
-        // also register all ConfigFilters
-        ServiceLoader<ConfigFilter> configFilterLoader = ServiceLoader.load(ConfigFilter.class, forClassLoader);
-        for (ConfigFilter configFilter : configFilterLoader) {
-            config.addConfigFilter(configFilter);
-        }
-
-        for (ConfigFilter filter : filters) {
-            config.addConfigFilter(filter);
-        }
 
         for (Converter<?> converter : converters) {
             config.addConverter(converter);

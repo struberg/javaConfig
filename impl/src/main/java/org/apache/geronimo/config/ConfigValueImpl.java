@@ -132,7 +132,7 @@ public class ConfigValueImpl<T> implements ConfigValue<T> {
         if (logChanges && (value != null && !value.equals(lastValue) || (value == null && lastValue != null)) )
         {
             logger.log(Level.INFO, "New value {0} for key {1}.",
-                    new Object[]{config.filterConfigValueForLog(keyOriginal, valueStr), keyOriginal});
+                    new Object[]{valueStr, keyOriginal});
         }
 
         lastValue = value;

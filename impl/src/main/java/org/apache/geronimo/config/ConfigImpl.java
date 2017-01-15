@@ -30,7 +30,6 @@ import java.util.logging.Logger;
 
 import io.microprofile.config.Config;
 import io.microprofile.config.ConfigValue;
-import io.microprofile.config.spi.ConfigFilter;
 import io.microprofile.config.spi.ConfigSource;
 import io.microprofile.config.spi.Converter;
 import org.apache.geronimo.config.converters.BooleanConverter;
@@ -48,7 +47,6 @@ public class ConfigImpl implements Config {
     protected Logger logger = Logger.getLogger(ConfigImpl.class.getName());
 
     protected ConfigSource[] configSources = new ConfigSource[0];
-    protected List<ConfigFilter> configFilters = new ArrayList<>();
     protected Map<Type, Converter> converters = new HashMap<>();
 
 
@@ -72,10 +70,10 @@ public class ConfigImpl implements Config {
             if (value != null) {
                 if (logger.isLoggable(Level.FINE)) {
                     logger.log(Level.FINE, "found value {0} for key {1} in ConfigSource {2}.",
-                            new Object[]{filterConfigValueForLog(key, value), key, configSource.getConfigName()});
+                            new Object[]{value, key, configSource.getConfigName()});
                 }
 
-                return filterConfigValue(key, value);
+                return value;
             }
         }
         return null;
@@ -118,34 +116,9 @@ public class ConfigImpl implements Config {
             result.putAll(configSource.getProperties());
         }
 
-        // now filter them
-        for (Map.Entry<String, String> entries : result.entrySet()) {
-            entries.setValue(filterConfigValue(entries.getKey(), entries.getValue()));
-        }
-
         return Collections.unmodifiableMap(result);
     }
 
-    @Override
-    public String filterConfigValue(String key, String value) {
-        String filteredValue = value;
-
-        for (ConfigFilter filter : configFilters) {
-            filteredValue = filter.filterValue(key, filteredValue);
-        }
-        return filteredValue;
-    }
-
-    @Override
-    public String filterConfigValueForLog(String key, String value) {
-        String logValue = value;
-
-        for (ConfigFilter filter : configFilters) {
-            logValue = filter.filterValueForLog(key, logValue);
-        }
-
-        return logValue;
-    }
 
     @Override
     public ConfigSource[] getConfigSources() {
@@ -160,10 +133,6 @@ public class ConfigImpl implements Config {
         configSources = sortDescending(allConfigSources);
     }
 
-    public synchronized  void addConfigFilter(ConfigFilter configFilter) {
-        configFilters.add(configFilter);
-
-    }
 
     public synchronized void addConverter(Converter<?> converter) {
         if (converter == null) {
