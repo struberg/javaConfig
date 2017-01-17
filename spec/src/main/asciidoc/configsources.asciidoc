@@ -15,8 +15,8 @@
 // limitations under the License.
 //
 
-[[configsources]]
-== ConfigSources
+[[configsource]]
+== ConfigSource
 
 A `ConfigSource` is exactly what its name says: a source for configured values.
 The `Config` uses all configured implementations of `ConfigSource` to look up the property in question.
@@ -39,12 +39,15 @@ config_ordinal = 120
 com.acme.myproject.someserver.url = http://more_important.server/some/endpoint
 ----
 
+[[default_configsources]]
 === Default ConfigSources
 
 A Microprofile-Config implementation must provide `ConfigSource` s for the following data out of the box:
 
 * System properties (ordinal=400)
-* Environment properties (ordinal=300)
+* Environment properties (ordinal=300).
+  The built in `ConfigSource` for the environment provides an all upper-case fallback lookup where dots are replaced with underlines.
+  An environment setting `ACME_MYKEY=bla` machtches a lookup for `config.getValue("acme.mykey")`.
 * A `ConfigSource` for each property file `META-INF/java-config.properties` found on the classpath. (default ordinal = 100)
 
 === Custom ConfigSources
@@ -122,6 +125,8 @@ Please note that a single `ConfigSource` should be either registered directly or
 A `Config` instance provides no caching but iterates over all `ConfigSources` for each `getValue(String)` operation.
 A `ConfigSource` is allowed to cache the underlying values itself.
 
+Users might use the `cacheFor(long, TimeUnit)` method of a `ConfigValue` to pick up values which might change at runtime without penetrating the configuration system.
+
 
 === Manually adding ConfigSources
 
@@ -129,3 +134,4 @@ A user can manually register `ConfigSource` s by using the method `void addConfi
 This will add the given list to the already registered `ConfigSources` of the current `Config` instance.
 
 The order in which the `ConfigSources` are evaluated when using `Config#getValue(String key)` is independent of the order in which they were added to the `Config`; this depends only on the `ordinal` values of the available `ConfigSources`.
+

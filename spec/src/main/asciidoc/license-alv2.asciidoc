@@ -24,7 +24,7 @@ Version: {revnumber}
 
 Status: {revremark}
 
-Specification Lead: Mark Struberg
+Specification Lead: Mark Struberg, Emily Jiang
 
 Release: {revdate}
 

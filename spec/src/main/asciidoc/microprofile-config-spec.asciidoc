@@ -37,6 +37,10 @@ include::license-alv2.asciidoc[]
 
 include::architecture.asciidoc[]
 
+include::configexamples.asciidoc[]
+
+include::configprovider.asciidoc[]
+
 include::configsources.asciidoc[]
 
 include::converters.asciidoc[]

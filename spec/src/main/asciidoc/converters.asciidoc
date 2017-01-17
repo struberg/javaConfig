@@ -15,8 +15,8 @@
 // limitations under the License.
 //
 
-[[converters]]
-== Converters
+[[converter]]
+== Converter
 
 For providing typeseafe configuration we need to convert from the configured Strings into target types.
 This happens by providing `Converter` s in the `Config`.
