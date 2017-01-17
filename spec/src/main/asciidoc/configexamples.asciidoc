@@ -19,13 +19,13 @@
 == Configuration Usage Examples
 
 An application can access it's configured values via a `Config` instance.
-Use the `ConfigProvider` to access the `Config` of an application.
+A user can use the `ConfigProvider` to access the `Config` of an application or simply use `@Inject Config` within CDI managed components.
 
 === Simple Example
 
 [source, java]
 ----
-public class ConfigUsageSample {
+ppublic class ConfigUsageSample {
 
     public void useTheConfig() {
         // get access to the Config instance
@@ -50,6 +50,7 @@ $> java -jar some.jar -Dcom.acme.myproject.someserver.url=http://other.server/ot
 Note that the way to inject this configuration into the application can be extended by providing custom `ConfigSource` s.
 
 
+
 === Some advanced features
 
 It is also possible to dynamically pick up values which might change at runtime.
@@ -57,21 +58,28 @@ For example if the configured values get picked up from a custom <<configsource>
 
 [source, java]
 ----
+@ApplicationScoped
 public class DynamicConfigUsageSample {
 
-    private ConfigValue<String> urlConfigCfg
-        = ConfigProvider.getConfig().access("com.acme.myproject.someserver.url")
+    private @Inject Config config;
+
+    private ConfigValue<String>  serverUrlCfg;
+    private ConfigValue<Integer> serverPortCfg
+
+    @PostConstruct
+    private void init() {
+        serverUrlCfg= config.access("com.acme.myproject.someserver.url")
                 .cacheFor(5, TimeUnit.MINUTES)
                 .logChanges(true)
                 .evaluateVariables(true);
 
-    private ConfigValue<Integer> urlPortCfg
-        = ConfigProvider.getConfig().access("com.acme.myproject.someserver.url")
+        serverPortCfg = config.access("com.acme.myproject.someserver.port")
                 .as(Integer.class)
                 .cacheFor(5, TimeUnit.MINUTES)
                 .logChanges(true)
                 .evaluateVariables(true)
                 .withDefault(8080);
+    }
 
     public void useTheConfig() {
         callToServer(serverUrlCfg.getValue(), serverPortCfg.getValue());

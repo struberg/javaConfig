@@ -18,9 +18,13 @@
 [[configprovider]]
 == Accessing or Creating a certain Configuration
 
-The `ConfigProvider` is the central class to access a configuration.
+
+For manually accessing the `ConfigProvider` is the central class to access a configuration.
 It allows access to different configurations (represented by a `Config` instance) based on the application in which it is used.
-We distinguish 3 different ways to resolve a `Config` instance:
+We distinguish 5 different ways to create or `Config` instance:
+
+* In CDI manged components a user can use `@Inject` to access the current application configuration.
+  If no configuration is registered the automatic discovery of <<configsource,ConfigSources>> will be performed.
 
 * A factory method `ConfigProvider#getConfig()` to create a `Config` object based on automatically picked up `ConfigSources`
   of the Application identified by the current Thread Context ClassLoader classpath.
