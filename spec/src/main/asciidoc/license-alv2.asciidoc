@@ -28,11 +28,7 @@ Specification Lead: Mark Struberg
 
 Release: {revdate}
 
-Copyright 2016 Original Authors,
-Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements.
-Licensed to the Microprofile.io community.
-
-
+Copyright 2016-2017 Original Authors,
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at

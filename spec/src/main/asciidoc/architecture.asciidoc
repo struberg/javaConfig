@@ -39,24 +39,31 @@ The `ConfigProvider` is the central class to access a configuration.
 It allows access to different configurations (represented by a `Config` instance) based on the application in which it is used.
 We distinguish 3 different ways to resolve a `Config` instance:
 
-* A factory method `ConfigProvider#getConfig()` to create a `Config` object based on automatically picked up `ConfigSource` s from the current Thread Context ClassLoader classpath.
-  Subsequent calls to this method for a certain ClassLoader will return the same `Config` instance.
+* A factory method `ConfigProvider#getConfig()` to create a `Config` object based on automatically picked up `ConfigSources`
+  of the Application identified by the current Thread Context ClassLoader classpath.
+  Subsequent calls to this method for a certain Application will return the same `Config` instance.
 
-* A factory method `ConfigProvider#getConfig(ClassLoader forClassLoader)` to create a `Config` object based on automatically picked up `ConfigSource` s from a given ClassLoader.
+* A factory method `ConfigProvider#getConfig(ClassLoader forClassLoader)` to create a `Config` object based on automatically picked up `ConfigSources`
+  of the Application identified by the given ClassLoader.
   This can be used if the Thread Context ClassLoader does not represent the correct layer.
   E.g. if you need the Config for a class in a shared EAR lib folder.
-  Subsequent calls to this method for a certain ClassLoader will return the same `Config` instance.
+  Subsequent calls to this method for a certain Application will return the same `Config` instance.
 
 * A factory method `ConfigProvider#newConfig()` to create an empty `Config` object which can be filled manually via a builder.
   This configuration instance will not be shared by the `ConfigProvider`.
   This method is intended be used if a IoT container or any other external Factory can be used to give access to a manually created shared `Config`.
 
+* A factory method `ConfigProvider#registerConfig()` to create an empty `Config` object which can be filled manually via a builder.
+  This configuration instance *will* be shared by the `ConfigProvider`.
+  Any subsequent call to `ConfigProvider#getConfig()` will return the registered `Config` instance.
+
+
 All methods in the `ConfigProvider` and `Config` implementations are thread safe and reentrant.
 
-If a `Config` is bound to a ClassLoader it must be made sure that it gets properly removed if the ClassLoader gets destroyed.
-It must not create any memory leaks in that case.
+If a `Config` is bound to an Application it is ensured that it gets properly removed if the Application gets destroyed.
+The Config system deos not create any memory leaks in that case.
 
-A `Config` can be release by calling `ConfigProvider#release(Config)`.
+A `Config` can be release manually by calling `ConfigProvider#release(Config)`.
 ConfigSources which implement the `java.io.Closeable` interface will be properly destroyed.
 Any subsequent call to `ConfigProvider#getConfig()` or `ConfigProvider#getConfig(ClassLoader forClassLoader)` will result in a new `Config` instance.
 
