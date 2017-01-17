@@ -60,13 +60,13 @@ For example if the configured values get picked up from a custom <<configsource>
 public class DynamicConfigUsageSample {
 
     private ConfigValue<String> urlConfigCfg
-        = ConfigProvider.getConfig.access("com.acme.myproject.someserver.url")
+        = ConfigProvider.getConfig().access("com.acme.myproject.someserver.url")
                 .cacheFor(5, TimeUnit.MINUTES)
                 .logChanges(true)
                 .evaluateVariables(true);
 
     private ConfigValue<Integer> urlPortCfg
-        = ConfigProvider.getConfig.access("com.acme.myproject.someserver.url")
+        = ConfigProvider.getConfig().access("com.acme.myproject.someserver.url")
                 .as(Integer.class)
                 .cacheFor(5, TimeUnit.MINUTES)
                 .logChanges(true)
