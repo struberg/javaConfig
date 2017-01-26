@@ -34,7 +34,7 @@ public class SampleYamlConfigSource implements ConfigSource {
 
     @Override
     public int getOrdinal() {
-        return 110;
+        return config.get("ordinal") != null ? Integer.valueOf(config.get("ordinal")) : 110;
     }
 
     @Override

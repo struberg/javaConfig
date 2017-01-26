@@ -104,6 +104,15 @@ public interface ConfigValue<T> {
     T getValue();
 
     /**
+     * Resolves the value and split it on each comma (',') character.
+     * If a comma is contained in the values it must get escaped with a preceding backslash (&quot;\,&quot;).
+     * Any backslash needs to get escaped via double-backslash (&quot;\\&quot;).
+     *
+     * @return the list of configured comma separated values or an empty Iterable if no
+     */
+    Iterable<T> getValueList();
+
+    /**
      * Returns the key given in {@link Config#access(String)}.
      * @return the original key
      */
