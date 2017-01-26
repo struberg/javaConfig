@@ -16,6 +16,9 @@
  */
 package io.microprofile.config.internal;
 
+import java.util.ServiceLoader;
+import java.util.logging.Logger;
+
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
@@ -61,7 +64,40 @@ public class ConfigExtension implements Extension {
     }
 
     private ConfigBuilder newConfigBuilder() {
-        return null; //X TODO, needs a concrete class in the API -> ugly as hell
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        if (cl == null) {
+            cl = ConfigBuilder.class.getClassLoader();
+        }
+
+        ConfigBuilder instance = loadConfigBuilder(cl);
+
+        if (instance == null) {
+            throw new IllegalStateException("No ConfigResolver SPI implementation found!");
+        }
+
+        return instance;
+    }
+
+    private static ConfigBuilder loadConfigBuilder(ClassLoader cl) {
+        if (cl == null) {
+            return null;
+        }
+
+        // start from the root CL and go back down to the TCCL
+        ConfigBuilder instance = loadConfigBuilder(cl.getParent());
+
+        if (instance == null) {
+            ServiceLoader<ConfigBuilder> sl = ServiceLoader.load(ConfigBuilder.class, cl);
+            for (ConfigBuilder spi : sl) {
+                if (instance != null) {
+                    Logger.getLogger(ConfigExtension.class.getName())
+                            .warning("Multiple ConfigResolver SPIs found. Ignoring " + spi.getClass().getName());
+                } else {
+                    instance = spi;
+                }
+            }
+        }
+        return instance;
     }
 
 

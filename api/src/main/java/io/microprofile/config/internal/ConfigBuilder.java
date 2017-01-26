@@ -22,30 +22,13 @@ import io.microprofile.config.spi.Converter;
 
 /**
  * Builder for manually creating an instance of a {@code Config}.
+ *
+ * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
-public class ConfigBuilder {
-    public ConfigBuilder ignoreDefaultSources() {
-        //X TODO
-        return null;
-    }
-
-    public ConfigBuilder forClassLoader(ClassLoader loader) {
-        //X TODO
-        return null;
-    }
-
-    public ConfigBuilder withSources(ConfigSource... sources) {
-        //X TODO
-        return null;
-    }
-
-    public ConfigBuilder withConverters(Converter<?>[] filters) {
-        //X TODO
-        return null;
-    }
-
-    public Config build() {
-        //X TODO
-        return null;
-    }
+public abstract class ConfigBuilder {
+    public abstract ConfigBuilder ignoreDefaultSources();
+    public abstract ConfigBuilder forClassLoader(ClassLoader loader);
+    public abstract ConfigBuilder withSources(ConfigSource... sources);
+    public abstract ConfigBuilder withConverters(Converter<?>... filters);
+    public abstract Config build();
 }
