@@ -17,7 +17,7 @@
 package org.apache.geronimo.config;
 
 import io.microprofile.config.Config;
-import io.microprofile.config.ConfigProvider;
+import io.microprofile.config.internal.ConfigBuilder;
 import io.microprofile.config.spi.ConfigSource;
 import io.microprofile.config.spi.ConfigSourceProvider;
 import io.microprofile.config.spi.Converter;
@@ -36,32 +36,32 @@ import static java.util.Arrays.asList;
  * @author <a href="mailto:rmannibucau@apache.org">Romain Manni-Bucau</a>
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
-public class DefaultConfigBuilder implements ConfigProvider.ConfigBuilder {
+public class DefaultConfigBuilder extends ConfigBuilder {
     protected ClassLoader forClassLoader;
     private final List<ConfigSource> sources = new ArrayList<>();
     private final List<Converter<?>> converters = new ArrayList<>();
     private boolean ignoreDefaultSources = false;
 
     @Override
-    public ConfigProvider.ConfigBuilder ignoreDefaultSources() {
+    public ConfigBuilder ignoreDefaultSources() {
         this.ignoreDefaultSources = true;
         return this;
     }
 
     @Override
-    public ConfigProvider.ConfigBuilder forClassLoader(final ClassLoader loader) {
+    public ConfigBuilder forClassLoader(final ClassLoader loader) {
         this.forClassLoader = loader;
         return this;
     }
 
     @Override
-    public ConfigProvider.ConfigBuilder withSources(final ConfigSource... sources) {
+    public ConfigBuilder withSources(final ConfigSource... sources) {
         this.sources.addAll(asList(sources));
         return this;
     }
 
     @Override
-    public ConfigProvider.ConfigBuilder withConverters(Converter<?>... converters) {
+    public ConfigBuilder withConverters(Converter<?>... converters) {
         this.converters.addAll(asList(converters));
         return this;
     }

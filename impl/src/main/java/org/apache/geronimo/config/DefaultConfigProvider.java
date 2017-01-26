@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 import io.microprofile.config.Config;
+import io.microprofile.config.internal.ConfigBuilder;
 import io.microprofile.config.ConfigProvider;
 
 
@@ -75,12 +76,12 @@ public class DefaultConfigProvider implements ConfigProvider.SPI {
     }
 
     @Override
-    public ConfigProvider.ConfigBuilder newConfig() {
+    public ConfigBuilder newConfig() {
         return new DefaultConfigBuilder();
     }
 
     @Override
-    public ConfigProvider.ConfigBuilder registerConfig() {
+    public ConfigBuilder registerConfig() {
         return new ManualApplicationConfigBuilder(this);
     }
 

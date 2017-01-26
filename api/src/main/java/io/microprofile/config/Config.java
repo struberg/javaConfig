@@ -18,7 +18,6 @@ package io.microprofile.config;
 
 import java.util.Map;
 
-import io.microprofile.config.spi.ConfigSourceProvider;
 import io.microprofile.config.spi.Converter;
 import io.microprofile.config.spi.ConfigSource;
 
@@ -28,7 +27,7 @@ import io.microprofile.config.spi.ConfigSource;
  * If multiple {@link ConfigSource}s have the same ordinal, their order is undefined.</p>
  *
  * <p>You can provide your own lookup paths by implementing and registering additional
- * {@link ConfigSource}s and {@link ConfigSourceProvider} implementations.</p>
+ * {@link ConfigSource}s implementations.</p>
  *
  *
  * @see ConfigProvider to resolve the current configuration.
@@ -36,13 +35,6 @@ import io.microprofile.config.spi.ConfigSource;
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
 public interface Config {
-
-    /**
-     * Create a {@link ConfigValue} to access the underlying configuration.
-     *
-     * @param key the property key
-     */
-    ConfigValue<String> access(String key);
 
     /**
      * Resolves the value configured for the given key.
