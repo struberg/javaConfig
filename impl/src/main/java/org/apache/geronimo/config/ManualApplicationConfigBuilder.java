@@ -16,8 +16,8 @@
  */
 package org.apache.geronimo.config;
 
-import io.microprofile.config.Config;
-import io.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 
 /**
  * @author <a href="mailto:struberg@yahoo.de">Mark Struberg</a>
@@ -36,7 +36,7 @@ public class ManualApplicationConfigBuilder extends DefaultConfigBuilder {
         if (cl == null) {
             cl = Thread.currentThread().getContextClassLoader();
             if (cl == null) {
-                cl = ConfigProvider.SPI.class.getClassLoader();
+                cl = ConfigProviderResolver.class.getClassLoader();
             }
         }
         Config oldConfig = configProvider.existingConfig(cl);

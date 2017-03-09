@@ -16,11 +16,11 @@
  */
 package org.apache.geronimo.config;
 
-import io.microprofile.config.Config;
-import io.microprofile.config.ConfigProvider;
-import io.microprofile.config.spi.ConfigSource;
-import io.microprofile.config.spi.ConfigSourceProvider;
-import io.microprofile.config.spi.Converter;
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.spi.ConfigBuilder;
+import org.eclipse.microprofile.config.spi.ConfigSource;
+import org.eclipse.microprofile.config.spi.ConfigSourceProvider;
+import org.eclipse.microprofile.config.spi.Converter;
 import org.apache.geronimo.config.configsource.PropertyFileConfigSourceProvider;
 import org.apache.geronimo.config.configsource.SystemEnvConfigSource;
 import org.apache.geronimo.config.configsource.SystemPropertyConfigSource;
@@ -36,32 +36,32 @@ import static java.util.Arrays.asList;
  * @author <a href="mailto:rmannibucau@apache.org">Romain Manni-Bucau</a>
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
-public class DefaultConfigBuilder implements ConfigProvider.ConfigBuilder {
+public class DefaultConfigBuilder implements ConfigBuilder {
     protected ClassLoader forClassLoader;
     private final List<ConfigSource> sources = new ArrayList<>();
     private final List<Converter<?>> converters = new ArrayList<>();
-    private boolean ignoreDefaultSources = false;
+    private boolean ignoreDefaultSources = true;
 
     @Override
-    public ConfigProvider.ConfigBuilder ignoreDefaultSources() {
-        this.ignoreDefaultSources = true;
+    public ConfigBuilder addDefaultSources() {
+        this.ignoreDefaultSources = false;
         return this;
     }
 
     @Override
-    public ConfigProvider.ConfigBuilder forClassLoader(final ClassLoader loader) {
+    public ConfigBuilder forClassLoader(final ClassLoader loader) {
         this.forClassLoader = loader;
         return this;
     }
 
     @Override
-    public ConfigProvider.ConfigBuilder withSources(final ConfigSource... sources) {
+    public ConfigBuilder withSources(final ConfigSource... sources) {
         this.sources.addAll(asList(sources));
         return this;
     }
 
     @Override
-    public ConfigProvider.ConfigBuilder withConverters(Converter<?>... converters) {
+    public ConfigBuilder withConverters(Converter<?>... converters) {
         this.converters.addAll(asList(converters));
         return this;
     }
@@ -78,15 +78,13 @@ public class DefaultConfigBuilder implements ConfigProvider.ConfigBuilder {
         if (!ignoreDefaultSources) {
             // load all ConfigSource services
             ServiceLoader<ConfigSource> configSourceLoader = ServiceLoader.load(ConfigSource.class, forClassLoader);
-            for (ConfigSource configSource : configSourceLoader) {
-                configSources.add(configSource);
-            }
+            configSourceLoader.forEach(configSource -> configSources.add(configSource));
 
             // load all ConfigSources from ConfigSourceProviders
             ServiceLoader<ConfigSourceProvider> configSourceProviderLoader = ServiceLoader.load(ConfigSourceProvider.class, forClassLoader);
-            for (ConfigSourceProvider configSourceProvider : configSourceProviderLoader) {
-                configSources.addAll(configSourceProvider.getConfigSources(forClassLoader));
-            }
+            configSourceProviderLoader.forEach(configSourceProvider ->
+                    configSourceProvider.getConfigSources(forClassLoader)
+                            .forEach(configSource -> configSources.add(configSource)));
         }
 
         ConfigImpl config = new ConfigImpl();
@@ -104,7 +102,7 @@ public class DefaultConfigBuilder implements ConfigProvider.ConfigBuilder {
 
         configSources.add(new SystemEnvConfigSource());
         configSources.add(new SystemPropertyConfigSource());
-        configSources.addAll(new PropertyFileConfigSourceProvider("META-INF/java-config.properties", true, forClassLoader).getConfigSources(forClassLoader));
+        configSources.addAll(new PropertyFileConfigSourceProvider("META-INF/microprofile-config.properties", true, forClassLoader).getConfigSources(forClassLoader));
 
         return configSources;
     }

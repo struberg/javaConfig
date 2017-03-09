@@ -42,12 +42,12 @@ public class PropertyFileConfigSource extends BaseConfigSource {
      * @return value for the given key or null if there is no configured value
      */
     @Override
-    public String getPropertyValue(String key) {
-        return (String) properties.get(key);
+    public String getValue(String key) {
+        return properties.get(key);
     }
 
     @Override
-    public String getConfigName() {
+    public String getName() {
         return fileName;
     }
 

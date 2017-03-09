@@ -18,7 +18,7 @@ package org.apache.geronimo.config.converters;
 
 import javax.annotation.Priority;
 
-import io.microprofile.config.spi.Converter;
+import org.eclipse.microprofile.config.spi.Converter;
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>

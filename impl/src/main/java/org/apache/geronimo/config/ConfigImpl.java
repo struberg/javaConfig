@@ -23,15 +23,18 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import io.microprofile.config.Config;
-import io.microprofile.config.ConfigValue;
-import io.microprofile.config.spi.ConfigSource;
-import io.microprofile.config.spi.Converter;
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigValue;
+import org.eclipse.microprofile.config.spi.ConfigSource;
+import org.eclipse.microprofile.config.spi.Converter;
 import org.apache.geronimo.config.converters.BooleanConverter;
 import org.apache.geronimo.config.converters.DoubleConverter;
 import org.apache.geronimo.config.converters.FloatConverter;
@@ -63,14 +66,18 @@ public class ConfigImpl implements Config {
     }
 
     @Override
+    public Optional<String> getString(String key) {
+        return Optional.ofNullable(getValue(key));
+    }
+
     public String getValue(String key) {
         for (ConfigSource configSource : configSources) {
-            String value = configSource.getPropertyValue(key);
+            String value = configSource.getValue(key);
 
             if (value != null) {
                 if (logger.isLoggable(Level.FINE)) {
                     logger.log(Level.FINE, "found value {0} for key {1} in ConfigSource {2}.",
-                            new Object[]{value, key, configSource.getConfigName()});
+                            new Object[]{value, key, configSource.getName()});
                 }
 
                 return value;
@@ -80,12 +87,11 @@ public class ConfigImpl implements Config {
     }
 
     @Override
-    public <T> T getValue(String key, Class<T> asType) {
+    public <T> Optional<T> getValue(String key, Class<T> asType) {
         String value = getValue(key);
-        return convert(value, asType);
+        return Optional.ofNullable(convert(value, asType));
     }
 
-    @Override
     public <T> T convert(String value, Class<T> asType) {
         Converter<T> converter = getConverter(asType);
         if (value != null) {
@@ -104,20 +110,20 @@ public class ConfigImpl implements Config {
     }
 
     public ConfigValue<String> access(String key) {
-        return new ConfigValueImpl<>(this, key);
+        return new ConfigValueImpl<String>(this, key);
     }
 
     @Override
-    public Map<String, String> getAllProperties() {
-        Map<String, String> result = new HashMap<String, String>();
+    public Iterable<String> getPropertyNames() {
+        Set<String> result = new HashSet<>();
 
         for (int i = configSources.length; i > 0; i--) {
             ConfigSource configSource = configSources[i];
-            result.putAll(configSource.getProperties());
+            result.addAll(configSource.getProperties().keySet());
         }
-
-        return Collections.unmodifiableMap(result);
+        return result;
     }
+
 
 
     @Override

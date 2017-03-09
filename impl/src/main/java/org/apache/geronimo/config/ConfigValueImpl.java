@@ -16,17 +16,20 @@
  */
 package org.apache.geronimo.config;
 
-import io.microprofile.config.ConfigValue;
-import io.microprofile.config.spi.Converter;
+import org.eclipse.microprofile.config.ConfigValue;
+import org.eclipse.microprofile.config.spi.Converter;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
-public class ConfigValueImpl<T> implements ConfigValue<T> {
+public class ConfigValueImpl<T>  implements ConfigValue<T> {
     private static final Logger logger = Logger.getLogger(ConfigValueImpl.class.getName());
 
     private final ConfigImpl config;
@@ -39,19 +42,12 @@ public class ConfigValueImpl<T> implements ConfigValue<T> {
 
     private String[] lookupChain;
 
-    private boolean withDefault = false;
-    private T defaultValue;
-
-
-    private Converter<?> converter;
-
     private boolean evaluateVariables = false;
-
-    private boolean logChanges = false;
 
     private long cacheTimeMs = -1;
     private volatile long reloadAfter = -1;
     private T lastValue = null;
+    private ConfigChanged valueChangeListener;
 
     public ConfigValueImpl(ConfigImpl config, String key) {
         this.config = config;
@@ -61,29 +57,9 @@ public class ConfigValueImpl<T> implements ConfigValue<T> {
     @Override
     public <N> ConfigValue<N> as(Class<N> clazz) {
         configEntryType = clazz;
-        this.converter = null;
         return (ConfigValue<N>) this;
     }
 
-    @Override
-    public ConfigValue<T> withDefault(T value) {
-        defaultValue = value;
-        withDefault = true;
-        return this;
-    }
-
-    @Override
-    public ConfigValue<T> withStringDefault(String value) {
-        if (value == null || value.isEmpty())
-        {
-            throw new RuntimeException("Empty String or null supplied as string-default value for property "
-                    + keyOriginal);
-        }
-
-        defaultValue = convert(value);
-        withDefault = true;
-        return this;
-    }
 
     @Override
     public ConfigValue<T> cacheFor(long value, TimeUnit timeUnit) {
@@ -97,20 +73,76 @@ public class ConfigValueImpl<T> implements ConfigValue<T> {
         return this;
     }
 
-    @Override
     public ConfigValue<T> withLookupChain(String... postfixNames) {
         this.lookupChain = postfixNames;
         return this;
     }
 
     @Override
-    public ConfigValue<T> logChanges(boolean logChanges) {
-        this.logChanges = logChanges;
+    public T get() {
+        T val = getValue();
+        if (val == null) {
+            throw new NoSuchElementException("No config value present for key " + keyOriginal);
+        }
+        return val;
+    }
+
+    @Override
+    public Optional<T> getOptional() {
+        return Optional.ofNullable(getValue());
+    }
+
+    @Override
+    public ConfigValue<T> onChange(ConfigChanged valueChangeListener) {
+        this.valueChangeListener = valueChangeListener;
         return this;
     }
 
     @Override
+    public List<T> getValueList() {
+        String rawList = (String) getValue(false);
+        List<T> values = new ArrayList<T>();
+        StringBuilder sb = new StringBuilder(64);
+        for (int i= 0; i < rawList.length(); i++) {
+            char c = rawList.charAt(i);
+            if ('\\' == c) {
+                if (i == rawList.length()) {
+                    throw new IllegalStateException("incorrect escaping of key " + keyOriginal + " value: " + rawList);
+                }
+                char nextChar = rawList.charAt(i+1);
+                if (nextChar == '\\') {
+                    sb.append('\\');
+                }
+                else if (nextChar == ',') {
+                    sb.append(',');
+                }
+                i++;
+            }
+            else if (',' == c) {
+                addListValue(values, sb);
+            }
+            else {
+                sb.append(c);
+            }
+        }
+        addListValue(values, sb);
+
+        return values;
+    }
+
+    private void addListValue(List<T> values, StringBuilder sb) {
+        String val = sb.toString().trim();
+        if (!val.isEmpty()) {
+            values.add(convert(val));
+        }
+        sb.setLength(0);
+    }
+
     public T getValue() {
+        return getValue(true);
+    }
+
+    private T getValue(boolean convert) {
         long now = -1;
         if (cacheTimeMs > 0)
         {
@@ -122,17 +154,11 @@ public class ConfigValueImpl<T> implements ConfigValue<T> {
         }
 
         String valueStr = resolveStringValue();
-        T value = convert(valueStr);
+        T value = convert ? convert(valueStr) : (T) valueStr;
 
-        if (withDefault)
+        if (valueChangeListener != null && (value != null && !value.equals(lastValue) || (value == null && lastValue != null)) )
         {
-            value = fallbackToDefaultIfEmpty(keyResolved, value, defaultValue);
-        }
-
-        if (logChanges && (value != null && !value.equals(lastValue) || (value == null && lastValue != null)) )
-        {
-            logger.log(Level.INFO, "New value {0} for key {1}.",
-                    new Object[]{valueStr, keyOriginal});
+            valueChangeListener.onValueChange(keyOriginal, lastValue, value);
         }
 
         lastValue = value;
@@ -165,7 +191,7 @@ public class ConfigValueImpl<T> implements ConfigValue<T> {
                 {
                     break;
                 }
-                String variableValue = config.access(varName).evaluateVariables(true).withLookupChain(lookupChain).getValue();
+                String variableValue = config.access(varName).evaluateVariables(true).get();
                 if (variableValue != null)
                 {
                     value = value.replace("${" + varName + "}", variableValue);
@@ -186,11 +212,6 @@ public class ConfigValueImpl<T> implements ConfigValue<T> {
         return keyResolved;
     }
 
-    @Override
-    public T getDefaultValue() {
-        return defaultValue;
-    }
-
     private T convert(String value) {
         if (String.class == configEntryType) {
             return (T) value;
@@ -202,18 +223,6 @@ public class ConfigValueImpl<T> implements ConfigValue<T> {
         }
 
         return (T) converter.convert(value);
-    }
-
-    private T fallbackToDefaultIfEmpty(String key, T value, T defaultValue) {
-        if (value == null || (value instanceof String && ((String)value).isEmpty()))
-        {
-            logger.log(Level.FINE, "no configured value found for key {0}, using default value {1}.",
-                    new Object[]{key, defaultValue});
-
-            return defaultValue;
-        }
-
-        return value;
     }
 
 }

@@ -16,7 +16,7 @@
  */
 package org.apache.geronimo.config.converters;
 
-import io.microprofile.config.spi.Converter;
+import org.eclipse.microprofile.config.spi.Converter;
 
 import javax.annotation.Priority;
 

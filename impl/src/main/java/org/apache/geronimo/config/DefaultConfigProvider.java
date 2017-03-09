@@ -21,16 +21,17 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
-import io.microprofile.config.Config;
-import io.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.spi.ConfigBuilder;
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
-public class DefaultConfigProvider implements ConfigProvider.SPI {
+public class DefaultConfigProvider extends ConfigProviderResolver {
 
-    protected static Map<ClassLoader, WeakReference<Config>> configs
+    private static Map<ClassLoader, WeakReference<Config>> configs
             = Collections.synchronizedMap(new WeakHashMap<ClassLoader, WeakReference<Config>>());
 
 
@@ -51,7 +52,7 @@ public class DefaultConfigProvider implements ConfigProvider.SPI {
             synchronized (DefaultConfigProvider.class) {
                 config = existingConfig(forClassLoader);
                 if (config == null) {
-                    config = createConfig(forClassLoader);
+                    config = getBuilder().forClassLoader(forClassLoader).addDefaultSources().build();
                     registerConfig(config, forClassLoader);
                 }
             }
@@ -64,9 +65,6 @@ public class DefaultConfigProvider implements ConfigProvider.SPI {
         return configRef != null ? configRef.get() : null;
     }
 
-    protected Config createConfig(ClassLoader forClassLoader) {
-        return newConfig().forClassLoader(forClassLoader).build();
-    }
 
     void registerConfig(Config config, ClassLoader forClassLoader) {
         synchronized (DefaultConfigProvider.class) {
@@ -75,13 +73,13 @@ public class DefaultConfigProvider implements ConfigProvider.SPI {
     }
 
     @Override
-    public ConfigProvider.ConfigBuilder newConfig() {
+    public ConfigBuilder getBuilder() {
         return new DefaultConfigBuilder();
     }
 
     @Override
-    public ConfigProvider.ConfigBuilder registerConfig() {
-        return new ManualApplicationConfigBuilder(this);
+    public void setConfig(Config config, ClassLoader classLoader) {
+        registerConfig(config, classLoader);
     }
 
     @Override
