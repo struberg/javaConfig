@@ -102,7 +102,7 @@ public class DefaultConfigBuilder implements ConfigBuilder {
 
         configSources.add(new SystemEnvConfigSource());
         configSources.add(new SystemPropertyConfigSource());
-        configSources.addAll(new PropertyFileConfigSourceProvider("META-INF/microprofile-config.properties", true, forClassLoader).getConfigSources(forClassLoader));
+        configSources.addAll(new PropertyFileConfigSourceProvider("internal/META-INF/microprofile-config.properties", true, forClassLoader).getConfigSources(forClassLoader));
 
         return configSources;
     }
