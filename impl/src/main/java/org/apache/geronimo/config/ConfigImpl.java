@@ -19,7 +19,6 @@ package org.apache.geronimo.config;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -49,7 +48,7 @@ import javax.annotation.Priority;
 public class ConfigImpl implements Config {
     protected Logger logger = Logger.getLogger(ConfigImpl.class.getName());
 
-    protected ConfigSource[] configSources = new ConfigSource[0];
+    protected List<ConfigSource> configSources = new ArrayList<>();
     protected Map<Type, Converter> converters = new HashMap<>();
 
 
@@ -67,7 +66,11 @@ public class ConfigImpl implements Config {
 
     @Override
     public Optional<String> getString(String key) {
-        return Optional.ofNullable(getValue(key));
+        String val = getValue(key);
+        if (val == null || val.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(val);
     }
 
     public String getValue(String key) {
@@ -117,9 +120,9 @@ public class ConfigImpl implements Config {
     public Iterable<String> getPropertyNames() {
         Set<String> result = new HashSet<>();
 
-        for (int i = configSources.length; i > 0; i--) {
-            ConfigSource configSource = configSources[i];
+        for (ConfigSource configSource : configSources) {
             result.addAll(configSource.getProperties().keySet());
+
         }
         return result;
     }
@@ -127,12 +130,12 @@ public class ConfigImpl implements Config {
 
 
     @Override
-    public ConfigSource[] getConfigSources() {
-        return configSources;
+    public Iterable<ConfigSource> getConfigSources() {
+        return Collections.unmodifiableList(configSources);
     }
 
     public synchronized void addConfigSources(List<ConfigSource> configSourcesToAdd) {
-        List<ConfigSource> allConfigSources = new ArrayList<>(Arrays.asList(configSources));
+        List<ConfigSource> allConfigSources = new ArrayList<>(configSources);
         allConfigSources.addAll(configSourcesToAdd);
 
         // finally put all the configSources back into the map
@@ -171,14 +174,14 @@ public class ConfigImpl implements Config {
     }
 
 
-    protected ConfigSource[] sortDescending(List<ConfigSource> configSources) {
+    protected List<ConfigSource> sortDescending(List<ConfigSource> configSources) {
         Collections.sort(configSources, new Comparator<ConfigSource>() {
             @Override
             public int compare(ConfigSource configSource1, ConfigSource configSource2) {
                 return (configSource1.getOrdinal() > configSource2.getOrdinal()) ? -1 : 1;
             }
         });
-        return configSources.toArray(new ConfigSource[configSources.size()]);
+        return configSources;
 
     }
 

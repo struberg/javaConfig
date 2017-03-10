@@ -15,18 +15,14 @@
     the specific language governing permissions and limitations under the
     License.
 -->
-<suite name="javaconfig-TCK" verbose="2" configfailurepolicy="continue" >
+<suite name="microprofileconfig-TCK" verbose="2" configfailurepolicy="continue" >
 
-
-    <test name="JSR-346 TCK">
-
-
+    <test name="Microprofile-config 1.0 TCK">
         <packages>
             <package name="org.eclipse.microprofile.config.tck.*">
             </package>
 
         </packages>
-
     </test>
 
 </suite>

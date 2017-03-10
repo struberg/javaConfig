@@ -66,7 +66,8 @@ public class DefaultConfigProvider extends ConfigProviderResolver {
     }
 
 
-    void registerConfig(Config config, ClassLoader forClassLoader) {
+    @Override
+    public void registerConfig(Config config, ClassLoader forClassLoader) {
         synchronized (DefaultConfigProvider.class) {
             configs.put(forClassLoader, new WeakReference<>(config));
         }
@@ -77,10 +78,6 @@ public class DefaultConfigProvider extends ConfigProviderResolver {
         return new DefaultConfigBuilder();
     }
 
-    @Override
-    public void setConfig(Config config, ClassLoader classLoader) {
-        registerConfig(config, classLoader);
-    }
 
     @Override
     public void releaseConfig(Config config) {
