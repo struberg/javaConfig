@@ -30,12 +30,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ServiceLoader;
 
+import javax.enterprise.inject.Typed;
+
 import static java.util.Arrays.asList;
 
 /**
  * @author <a href="mailto:rmannibucau@apache.org">Romain Manni-Bucau</a>
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
+@Typed
 public class DefaultConfigBuilder implements ConfigBuilder {
     protected ClassLoader forClassLoader;
     private final List<ConfigSource> sources = new ArrayList<>();
@@ -102,7 +105,7 @@ public class DefaultConfigBuilder implements ConfigBuilder {
 
         configSources.add(new SystemEnvConfigSource());
         configSources.add(new SystemPropertyConfigSource());
-        configSources.addAll(new PropertyFileConfigSourceProvider("internal/META-INF/microprofile-config.properties", true, forClassLoader).getConfigSources(forClassLoader));
+        configSources.addAll(new PropertyFileConfigSourceProvider("/META-INF/microprofile-config.properties", true, forClassLoader).getConfigSources(forClassLoader));
 
         return configSources;
     }

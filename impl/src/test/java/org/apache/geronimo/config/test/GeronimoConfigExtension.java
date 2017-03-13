@@ -14,24 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.geronimo.config;
+package org.apache.geronimo.config.test;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-
-import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
+import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
+import org.jboss.arquillian.core.spi.LoadableExtension;
 
 /**
  * @author <a href="mailto:struberg@yahoo.de">Mark Struberg</a>
  */
-@ApplicationScoped
-public class ConfigInjectionProducer {
-
-    @Produces
-    @ApplicationScoped
-    public Config createConfig() {
-        return ConfigProvider.getConfig();
+public class GeronimoConfigExtension implements LoadableExtension {
+    @Override
+    public void register(ExtensionBuilder extensionBuilder) {
+        extensionBuilder.service(ApplicationArchiveProcessor.class, GeronimoConfigArchiveProcessor.class);
     }
-
 }

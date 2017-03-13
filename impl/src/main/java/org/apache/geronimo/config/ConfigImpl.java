@@ -41,10 +41,12 @@ import org.apache.geronimo.config.converters.IntegerConverter;
 import org.apache.geronimo.config.converters.LongConverter;
 
 import javax.annotation.Priority;
+import javax.enterprise.inject.Typed;
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
+@Typed
 public class ConfigImpl implements Config {
     protected Logger logger = Logger.getLogger(ConfigImpl.class.getName());
 

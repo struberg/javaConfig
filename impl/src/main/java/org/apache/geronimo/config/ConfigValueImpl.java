@@ -26,9 +26,12 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import javax.enterprise.inject.Typed;
+
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
+@Typed
 public class ConfigValueImpl<T>  implements ConfigValue<T> {
     private static final Logger logger = Logger.getLogger(ConfigValueImpl.class.getName());
 

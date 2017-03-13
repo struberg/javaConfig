@@ -21,6 +21,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
+
+import javax.enterprise.inject.Typed;
+
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
@@ -29,6 +32,7 @@ import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
+@Typed
 public class DefaultConfigProvider extends ConfigProviderResolver {
 
     private static Map<ClassLoader, WeakReference<Config>> configs
