@@ -31,7 +31,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigValue;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.eclipse.microprofile.config.spi.Converter;
 import org.apache.geronimo.config.converters.BooleanConverter;
@@ -112,10 +111,6 @@ public class ConfigImpl implements Config {
             throw new UnsupportedOperationException("No Converter registered for class " + asType);
         }
         return converter;
-    }
-
-    public ConfigValue<String> access(String key) {
-        return new ConfigValueImpl<String>(this, key);
     }
 
     @Override
