@@ -17,6 +17,8 @@
 package org.apache.geronimo.config.cdi;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 
 import org.eclipse.microprofile.config.Config;

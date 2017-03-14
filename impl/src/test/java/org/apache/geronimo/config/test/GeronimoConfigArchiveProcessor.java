@@ -16,6 +16,7 @@
  */
 package org.apache.geronimo.config.test;
 
+import java.io.File;
 import org.apache.geronimo.config.ConfigImpl;
 import org.apache.geronimo.config.DefaultConfigProvider;
 import org.apache.geronimo.config.cdi.ConfigInjectionProducer;
@@ -27,6 +28,7 @@ import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
@@ -51,6 +53,7 @@ public class GeronimoConfigArchiveProcessor implements ApplicationArchiveProcess
                     .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
                     .addAsServiceProvider(ConfigProviderResolver.class, DefaultConfigProvider.class);
             ((WebArchive) applicationArchive).addAsLibraries(configJar);
+            applicationArchive.as(ZipExporter.class).exportTo(new File("/home/omihalyi/mp-config.war"), true);
         }
     }
 }
