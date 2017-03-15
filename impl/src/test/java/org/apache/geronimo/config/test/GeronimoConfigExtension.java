@@ -14,20 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.microprofile.config.tck.converters;
+package org.apache.geronimo.config.test;
+
+import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
+import org.jboss.arquillian.core.spi.LoadableExtension;
 
 /**
- * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
+ * @author <a href="mailto:struberg@yahoo.de">Mark Struberg</a>
  */
-public class Duck {
-    private final String name;
-
-
-    public Duck(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
+public class GeronimoConfigExtension implements LoadableExtension {
+    @Override
+    public void register(ExtensionBuilder extensionBuilder) {
+        extensionBuilder.service(ApplicationArchiveProcessor.class, GeronimoConfigArchiveProcessor.class);
     }
 }

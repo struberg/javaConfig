@@ -14,22 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.microprofile.config.tck;
+package org.apache.geronimo.config.cdi;
 
-import io.microprofile.config.Config;
-import io.microprofile.config.ConfigProvider;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
 
 /**
- * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
+ * @author <a href="mailto:struberg@yahoo.de">Mark Struberg</a>
  */
-public class ConfigSourceProviderTest {
+@ApplicationScoped
+public class ConfigInjectionProducer {
 
-    @Test
-    public void testConfigSourceProvider() {
-        Config config = ConfigProvider.getConfig();
-
-        Assert.assertEquals(config.getValue("tck.config.test.sampleyaml.key1"), "yamlvalue1");
+    @Produces
+    @ApplicationScoped
+    public Config createConfig() {
+        return ConfigProvider.getConfig();
     }
+
 }

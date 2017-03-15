@@ -20,7 +20,7 @@ package org.apache.geronimo.config.configsource;
 
 import java.util.Map;
 
-import io.microprofile.config.spi.ConfigSource;
+import org.eclipse.microprofile.config.spi.ConfigSource;
 
 /**
  * {@link ConfigSource} which uses {@link System#getProperties()}
@@ -38,12 +38,12 @@ public class SystemPropertyConfigSource extends BaseConfigSource {
     }
 
     @Override
-    public String getPropertyValue(String key) {
+    public String getValue(String key) {
         return System.getProperty(key);
     }
 
     @Override
-    public String getConfigName() {
+    public String getName() {
         return "system-properties";
     }
 }

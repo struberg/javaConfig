@@ -21,7 +21,7 @@ package org.apache.geronimo.config.configsource;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import io.microprofile.config.spi.ConfigSource;
+import org.eclipse.microprofile.config.spi.ConfigSource;
 
 
 /**
@@ -31,6 +31,9 @@ import io.microprofile.config.spi.ConfigSource;
  * @author <a href="mailto:gpetracek@apache.org">Gerhard Petracek</a>
  */
 public abstract class BaseConfigSource implements ConfigSource {
+
+    public final static String CONFIG_ORDINAL = "config_ordinal";
+
     protected Logger log = Logger.getLogger(getClass().getName());
 
     private int ordinal = 1000; // default
@@ -50,7 +53,7 @@ public abstract class BaseConfigSource implements ConfigSource {
     protected void initOrdinal(int defaultOrdinal) {
         ordinal = defaultOrdinal;
 
-        String configuredOrdinalString = getPropertyValue(ConfigSource.CONFIG_ORDINAL);
+        String configuredOrdinalString = getValue(CONFIG_ORDINAL);
 
         try {
             if (configuredOrdinalString != null) {

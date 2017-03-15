@@ -19,19 +19,20 @@ package org.apache.geronimo.config;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import io.microprofile.config.Config;
-import io.microprofile.config.ConfigValue;
-import io.microprofile.config.spi.ConfigSource;
-import io.microprofile.config.spi.Converter;
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.spi.ConfigSource;
+import org.eclipse.microprofile.config.spi.Converter;
 import org.apache.geronimo.config.converters.BooleanConverter;
 import org.apache.geronimo.config.converters.DoubleConverter;
 import org.apache.geronimo.config.converters.FloatConverter;
@@ -39,14 +40,18 @@ import org.apache.geronimo.config.converters.IntegerConverter;
 import org.apache.geronimo.config.converters.LongConverter;
 
 import javax.annotation.Priority;
+import javax.enterprise.inject.Typed;
+import javax.enterprise.inject.Vetoed;
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
+@Typed
+@Vetoed
 public class ConfigImpl implements Config {
     protected Logger logger = Logger.getLogger(ConfigImpl.class.getName());
 
-    protected ConfigSource[] configSources = new ConfigSource[0];
+    protected List<ConfigSource> configSources = new ArrayList<>();
     protected Map<Type, Converter> converters = new HashMap<>();
 
 
@@ -63,14 +68,22 @@ public class ConfigImpl implements Config {
     }
 
     @Override
+    public Optional<String> getString(String key) {
+        String val = getValue(key);
+        if (val == null || val.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(val);
+    }
+
     public String getValue(String key) {
         for (ConfigSource configSource : configSources) {
-            String value = configSource.getPropertyValue(key);
+            String value = configSource.getValue(key);
 
             if (value != null) {
                 if (logger.isLoggable(Level.FINE)) {
                     logger.log(Level.FINE, "found value {0} for key {1} in ConfigSource {2}.",
-                            new Object[]{value, key, configSource.getConfigName()});
+                            new Object[]{value, key, configSource.getName()});
                 }
 
                 return value;
@@ -80,12 +93,11 @@ public class ConfigImpl implements Config {
     }
 
     @Override
-    public <T> T getValue(String key, Class<T> asType) {
+    public <T> Optional<T> getValue(String key, Class<T> asType) {
         String value = getValue(key);
-        return convert(value, asType);
+        return Optional.ofNullable(convert(value, asType));
     }
 
-    @Override
     public <T> T convert(String value, Class<T> asType) {
         Converter<T> converter = getConverter(asType);
         if (value != null) {
@@ -103,30 +115,26 @@ public class ConfigImpl implements Config {
         return converter;
     }
 
-    public ConfigValue<String> access(String key) {
-        return new ConfigValueImpl<>(this, key);
-    }
-
     @Override
-    public Map<String, String> getAllProperties() {
-        Map<String, String> result = new HashMap<String, String>();
+    public Iterable<String> getPropertyNames() {
+        Set<String> result = new HashSet<>();
 
-        for (int i = configSources.length; i > 0; i--) {
-            ConfigSource configSource = configSources[i];
-            result.putAll(configSource.getProperties());
+        for (ConfigSource configSource : configSources) {
+            result.addAll(configSource.getProperties().keySet());
+
         }
-
-        return Collections.unmodifiableMap(result);
+        return result;
     }
 
 
+
     @Override
-    public ConfigSource[] getConfigSources() {
-        return configSources;
+    public Iterable<ConfigSource> getConfigSources() {
+        return Collections.unmodifiableList(configSources);
     }
 
     public synchronized void addConfigSources(List<ConfigSource> configSourcesToAdd) {
-        List<ConfigSource> allConfigSources = new ArrayList<>(Arrays.asList(configSources));
+        List<ConfigSource> allConfigSources = new ArrayList<>(configSources);
         allConfigSources.addAll(configSourcesToAdd);
 
         // finally put all the configSources back into the map
@@ -165,14 +173,14 @@ public class ConfigImpl implements Config {
     }
 
 
-    protected ConfigSource[] sortDescending(List<ConfigSource> configSources) {
+    protected List<ConfigSource> sortDescending(List<ConfigSource> configSources) {
         Collections.sort(configSources, new Comparator<ConfigSource>() {
             @Override
             public int compare(ConfigSource configSource1, ConfigSource configSource2) {
                 return (configSource1.getOrdinal() > configSource2.getOrdinal()) ? -1 : 1;
             }
         });
-        return configSources.toArray(new ConfigSource[configSources.size()]);
+        return configSources;
 
     }
 

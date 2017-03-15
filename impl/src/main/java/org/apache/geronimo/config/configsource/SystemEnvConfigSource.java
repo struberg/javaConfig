@@ -21,7 +21,7 @@ package org.apache.geronimo.config.configsource;
 
 import java.util.Map;
 
-import io.microprofile.config.spi.ConfigSource;
+import org.eclipse.microprofile.config.spi.ConfigSource;
 
 /**
  * {@link ConfigSource} which uses {@link System#getenv()}
@@ -40,7 +40,7 @@ public class SystemEnvConfigSource extends BaseConfigSource {
     }
 
     @Override
-    public String getConfigName() {
+    public String getName() {
         return "system_env";
     }
 
@@ -50,7 +50,7 @@ public class SystemEnvConfigSource extends BaseConfigSource {
     }
 
     @Override
-    public String getPropertyValue(String key) {
+    public String getValue(String key) {
         String val = configValues.get(key);
         if (val == null || val.isEmpty()) {
             val = configValues.get(key.replace('.', '_'));

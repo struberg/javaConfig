@@ -17,4 +17,5 @@
 # under the License.
 #
 
-io.microprofile.config.tck.configsources.CustomDbConfigSource
+
+org.apache.geronimo.config.test.GeronimoConfigExtension
