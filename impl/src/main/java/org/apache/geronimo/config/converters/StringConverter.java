@@ -14,34 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.geronimo.config.cdi;
+package org.apache.geronimo.config.converters;
 
+import javax.annotation.Priority;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-
-import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.spi.Converter;
 
 /**
+ * 1:1 string output. Just to make converter logic happy.
+ *
  * @author <a href="mailto:struberg@yahoo.de">Mark Struberg</a>
  */
-@ApplicationScoped
-public class ConfigInjectionProducer {
+@Priority(1)
+public class StringConverter implements Converter<String> {
 
-    private Config config;
+    public static final StringConverter INSTANCE = new StringConverter();
 
-    @PostConstruct
-    void init() {
-        config = ConfigProvider.getConfig();
+    @Override
+    public String convert(String value) {
+        return value;
     }
-
-    @Produces
-    @ApplicationScoped
-    public Config createConfig() {
-        return config;
-    }
-
-
 }

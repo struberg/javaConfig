@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.geronimo.config.converters.StringConverter;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigValue;
 import org.eclipse.microprofile.config.spi.ConfigSource;
@@ -59,6 +60,7 @@ public class ConfigImpl implements Config {
     }
 
     private void registerDefaultConverter() {
+        converters.put(String.class, StringConverter.INSTANCE);
         converters.put(Boolean.class, BooleanConverter.INSTANCE);
         converters.put(Double.class, DoubleConverter.INSTANCE);
         converters.put(Float.class, FloatConverter.INSTANCE);
@@ -98,8 +100,8 @@ public class ConfigImpl implements Config {
     }
 
     public <T> T convert(String value, Class<T> asType) {
-        Converter<T> converter = getConverter(asType);
         if (value != null) {
+            Converter<T> converter = getConverter(asType);
             return converter.convert(value);
         }
 
