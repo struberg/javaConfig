@@ -47,9 +47,9 @@ By default there are 3 default ConfigSources:
 
 * `System.getenv()` (ordinal=400)
 * `System.getProperties()` (ordinal=300)
-* all `META-INF/java-config.properties` files on the ClassPath. (ordinal=100, separately configurable via a config_ordinal property inside each file)
+* all `META-INF/microprofile-config.properties` files on the ClassPath. (ordinal=100, separately configurable via a config_ordinal property inside each file)
 
-That means that I can put my default configuration in a `META-INF/java-config.properties` anywhere on the classpath.
+That means that I can put my default configuration in a `META-INF/microprofile-config.properties` anywhere on the classpath.
 And I can later simply e.g set a system property to change this default configuration.
 
 == Custom ConfigSources
