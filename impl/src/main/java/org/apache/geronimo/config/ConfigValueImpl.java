@@ -16,7 +16,6 @@
  */
 package org.apache.geronimo.config;
 
-import org.eclipse.microprofile.config.ConfigValue;
 import org.eclipse.microprofile.config.spi.Converter;
 
 import java.util.ArrayList;
@@ -32,7 +31,7 @@ import javax.enterprise.inject.Typed;
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
 @Typed
-public class ConfigValueImpl<T>  implements ConfigValue<T> {
+public class ConfigValueImpl<T> {
     private static final Logger logger = Logger.getLogger(ConfigValueImpl.class.getName());
 
     private final ConfigImpl config;
@@ -57,31 +56,31 @@ public class ConfigValueImpl<T>  implements ConfigValue<T> {
         this.keyOriginal = key;
     }
 
-    @Override
-    public <N> ConfigValue<N> as(Class<N> clazz) {
+    //X @Override
+    public <N> ConfigValueImpl<N> as(Class<N> clazz) {
         configEntryType = clazz;
-        return (ConfigValue<N>) this;
+        return (ConfigValueImpl<N>) this;
     }
 
 
-    @Override
-    public ConfigValue<T> cacheFor(long value, TimeUnit timeUnit) {
+    //X @Override
+    public ConfigValueImpl<T> cacheFor(long value, TimeUnit timeUnit) {
         this.cacheTimeMs = timeUnit.toMillis(value);
         return this;
     }
 
-    @Override
-    public ConfigValue<T> evaluateVariables(boolean evaluateVariables) {
+    //X @Override
+    public ConfigValueImpl<T> evaluateVariables(boolean evaluateVariables) {
         this.evaluateVariables = evaluateVariables;
         return this;
     }
 
-    public ConfigValue<T> withLookupChain(String... postfixNames) {
+    public ConfigValueImpl<T> withLookupChain(String... postfixNames) {
         this.lookupChain = postfixNames;
         return this;
     }
 
-    @Override
+    //X @Override
     public T get() {
         T val = getValue();
         if (val == null) {
@@ -90,18 +89,18 @@ public class ConfigValueImpl<T>  implements ConfigValue<T> {
         return val;
     }
 
-    @Override
+    //X @Override
     public Optional<T> getOptional() {
         return Optional.ofNullable(getValue());
     }
 
-    @Override
-    public ConfigValue<T> onChange(ConfigChanged valueChangeListener) {
+    //X @Override
+    public ConfigValueImpl<T> onChange(ConfigChanged valueChangeListener) {
         this.valueChangeListener = valueChangeListener;
         return this;
     }
 
-    @Override
+    //X @Override
     public List<T> getValueList() {
         String rawList = (String) getValue(false);
         List<T> values = new ArrayList<T>();
@@ -205,12 +204,12 @@ public class ConfigValueImpl<T>  implements ConfigValue<T> {
         return value;
     }
 
-    @Override
+    //X @Override
     public String getKey() {
         return keyOriginal;
     }
 
-    @Override
+    //X @Override
     public String getResolvedKey() {
         return keyResolved;
     }
@@ -226,6 +225,14 @@ public class ConfigValueImpl<T>  implements ConfigValue<T> {
         }
 
         return (T) converter.convert(value);
+    }
+
+    /**
+     * TODO feedback from gunnar: could be interesting to have this functionality also as Config#onChange(ConfigChanged)
+     * Callback which can be used with {@link #onChange(ConfigChanged)}
+     */
+    interface ConfigChanged {
+        <T> void onValueChange(String key, T oldValue, T newValue);
     }
 
 }

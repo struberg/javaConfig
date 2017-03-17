@@ -16,11 +16,14 @@
  */
 package org.apache.geronimo.config.cdi;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
@@ -36,6 +39,7 @@ import javax.inject.Provider;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 
 /**
  * @author <a href="mailto:struberg@yahoo.de">Mark Struberg</a>
@@ -48,7 +52,6 @@ public class ConfigInjectionBean<T> implements Bean<T>, PassivationCapable {
     }
 
     private final BeanManager bm;
-    private final Type type;
     private final Class rawType;
     private final Set<Type> types;
 
@@ -59,7 +62,6 @@ public class ConfigInjectionBean<T> implements Bean<T>, PassivationCapable {
 
     public ConfigInjectionBean(BeanManager bm, Type type) {
         this.bm = bm;
-        this.type = type;
 
         types = new HashSet<>();
         types.add(type);
@@ -104,19 +106,27 @@ public class ConfigInjectionBean<T> implements Bean<T>, PassivationCapable {
         }
         Annotated annotated = ip.getAnnotated();
         ConfigProperty configProperty = annotated.getAnnotation(ConfigProperty.class);
-        String key = configProperty.value();
+        String key = configProperty.name();
 
         if (annotated.getBaseType() instanceof ParameterizedType) {
             ParameterizedType paramType = (ParameterizedType) annotated.getBaseType();
             Type rawType = paramType.getRawType();
+
+            // handle Provider<T>
             if (rawType instanceof Class && ((Class) rawType).isAssignableFrom(Provider.class) && paramType.getActualTypeArguments().length == 1) {
                 Class clazz = (Class) paramType.getActualTypeArguments()[0]; //X TODO check type again, etc
                 return (T) new ConfigValueProvider(getConfig(), key, clazz);
             }
+
+            // handle Optional<T>
+            if (rawType instanceof Class && ((Class) rawType).isAssignableFrom(Optional.class) && paramType.getActualTypeArguments().length == 1) {
+                Class clazz = (Class) paramType.getActualTypeArguments()[0]; //X TODO check type again, etc
+                return (T) getConfig().getOptionalValue(key, clazz);
+            }
         }
         else {
             Class clazz = (Class) annotated.getBaseType();
-            return (T) getConfig().getValue(key, clazz).orElse(null);
+            return (T) getConfig().getValue(key, clazz);
         }
 
         throw new IllegalStateException("unhandled ConfigProperty");
@@ -171,15 +181,20 @@ public class ConfigInjectionBean<T> implements Bean<T>, PassivationCapable {
 
     private static class ConfigPropertyLiteral extends AnnotationLiteral<ConfigProperty> implements ConfigProperty {
         @Override
-        public String value() {
+        public String name() {
+            return "";
+        }
+
+        @Override
+        public String defaultValue() {
             return "";
         }
     }
 
-    public static class ConfigValueProvider<T> implements Provider<T> {
-        private final Config config;
+    public static class ConfigValueProvider<T> implements Provider<T>, Serializable {
+        private transient Config config;
         private final String key;
-        private Class<T> type;
+        private final Class<T> type;
 
         ConfigValueProvider(Config config, String key, Class<T> type) {
             this.config = config;
@@ -189,7 +204,13 @@ public class ConfigInjectionBean<T> implements Bean<T>, PassivationCapable {
 
         @Override
         public T get() {
-            return (T) config.getValue(key, type).orElse(null);
+            return (T) config.getValue(key, type);
         }
+
+        private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+            in.defaultReadObject();
+            config = ConfigProviderResolver.instance().getConfig();
+        }
+
     }
 }

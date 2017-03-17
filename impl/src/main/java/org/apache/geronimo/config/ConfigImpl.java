@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
@@ -32,7 +33,6 @@ import java.util.logging.Logger;
 
 import org.apache.geronimo.config.converters.StringConverter;
 import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigValue;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.eclipse.microprofile.config.spi.Converter;
 import org.apache.geronimo.config.converters.BooleanConverter;
@@ -68,13 +68,25 @@ public class ConfigImpl implements Config {
         converters.put(Long.class, LongConverter.INSTANCE);
     }
 
+
     @Override
-    public Optional<String> getString(String key) {
-        String val = getValue(key);
-        if (val == null || val.isEmpty()) {
-            return Optional.empty();
+    public <T> Optional<T> getOptionalValue(String propertyName, Class<T> asType) {
+        String value = getValue(propertyName);
+        if (value != null && value.length() == 0) {
+            // treat an empty string as not existing
+            value = null;
         }
-        return Optional.ofNullable(val);
+        return Optional.ofNullable(convert(value, asType));
+    }
+
+    @Override
+    public <T> T getValue(String propertyName, Class<T> propertyType) {
+        String value = getValue(propertyName);
+        if (value == null || value.length() == 0) {
+            throw new NoSuchElementException("No configured value found for config key " + propertyName);
+        }
+
+        return convert(value, propertyType);
     }
 
     public String getValue(String key) {
@@ -90,13 +102,8 @@ public class ConfigImpl implements Config {
                 return value;
             }
         }
-        return null;
-    }
 
-    @Override
-    public <T> Optional<T> getValue(String key, Class<T> asType) {
-        String value = getValue(key);
-        return Optional.ofNullable(convert(value, asType));
+        return null;
     }
 
     public <T> T convert(String value, Class<T> asType) {
@@ -116,7 +123,7 @@ public class ConfigImpl implements Config {
         return converter;
     }
 
-    public ConfigValue<String> access(String key) {
+    public ConfigValueImpl<String> access(String key) {
         return new ConfigValueImpl<String>(this, key);
     }
 

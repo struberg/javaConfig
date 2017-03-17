@@ -24,6 +24,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessInjectionPoint;
@@ -34,7 +35,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 /**
  * @author <a href="mailto:struberg@yahoo.de">Mark Struberg</a>
  */
-public class ConfigPropertyExtension implements Extension {
+public class ConfigExtension implements Extension {
 
     private Set<InjectionPoint> injectionPoints = new HashSet<>();
 
@@ -59,5 +60,10 @@ public class ConfigPropertyExtension implements Extension {
 
     public void validate(@Observes AfterDeploymentValidation add) {
         // TODO report any problems
+        //X injectionPoints.forEach();
+    }
+
+    public void shutdown(@Observes BeforeShutdown bsd) {
+        //X TODO shutdown config
     }
 }

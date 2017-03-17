@@ -17,4 +17,4 @@
 # under the License.
 #
 
-org.apache.geronimo.config.cdi.ConfigPropertyExtension
+org.apache.geronimo.config.cdi.ConfigExtension
