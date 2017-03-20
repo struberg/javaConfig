@@ -16,7 +16,10 @@
  */
 package org.apache.geronimo.config.cdi;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,11 +28,14 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeShutdown;
+import javax.enterprise.inject.spi.DeploymentException;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessInjectionPoint;
 import javax.inject.Provider;
 
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
@@ -59,11 +65,33 @@ public class ConfigExtension implements Extension {
     }
 
     public void validate(@Observes AfterDeploymentValidation add) {
-        // TODO report any problems
-        //X injectionPoints.forEach();
+        List<String> deploymentProblems = new ArrayList<>();
+
+        Config config = ConfigProvider.getConfig();
+
+        for (InjectionPoint injectionPoint : injectionPoints) {
+            Type type = injectionPoint.getType();
+            ConfigProperty configProperty = injectionPoint.getAnnotated().getAnnotation(ConfigProperty.class);
+            if (type instanceof Class) {
+                // a direct injection of a ConfigProperty
+                // that means a Converter must exist.
+                String key = ConfigInjectionBean.getConfigKey(injectionPoint, configProperty);
+                if (!config.getOptionalValue(key, (Class) type).isPresent()) {
+                    deploymentProblems.add("No Config Value exists for " + key);
+                }
+            }
+        }
+
+        if (!deploymentProblems.isEmpty()) {
+            add.addDeploymentProblem(new DeploymentException("Error while validating Configuration\n"
+                                                             + String.join("\n", deploymentProblems)));
+        }
+
     }
 
     public void shutdown(@Observes BeforeShutdown bsd) {
         //X TODO shutdown config
     }
+
+
 }

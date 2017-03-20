@@ -29,8 +29,11 @@ import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.AnnotatedMember;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.DeploymentException;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.util.AnnotationLiteral;
@@ -130,6 +133,37 @@ public class ConfigInjectionBean<T> implements Bean<T>, PassivationCapable {
         }
 
         throw new IllegalStateException("unhandled ConfigProperty");
+    }
+
+
+    /**
+     * Get the property key to use.
+     * In case the {@link ConfigProperty#name()} is empty we will try to determine the key name from the InjectionPoint.
+     */
+    public static String getConfigKey(InjectionPoint ip, ConfigProperty configProperty) {
+        String key = configProperty.name();
+        if (key.length() > 0) {
+            return key;
+        }
+        if (ip.getAnnotated() instanceof AnnotatedMember) {
+            AnnotatedMember member = (AnnotatedMember) ip.getAnnotated();
+            AnnotatedType declaringType = member.getDeclaringType();
+            if (declaringType != null) {
+                String[] parts = declaringType.getJavaClass().getName().split(".");
+                String cn = parts[parts.length-1];
+                parts[parts.length-1] = Character.toLowerCase(cn.charAt(0)) + (cn.length() > 1 ? cn.substring(1) : "");
+                StringBuilder sb = new StringBuilder(parts[0]);
+                for (int i = 1; i < parts.length; i++) {
+                    sb.append(".").append(parts[i]);
+                }
+
+                // now add the field name
+                sb.append(".").append(member.getJavaMember().getName());
+                return sb.toString();
+            }
+        }
+
+        throw new IllegalStateException("Could not find default name for @ConfigProperty InjectionPoint " + ip);
     }
 
     public Config getConfig() {

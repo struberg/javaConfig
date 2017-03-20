@@ -24,7 +24,7 @@
     <classes>
         <!-- Issues in the spec -->
         <!-- CDI-437 -->
-        <class name="io.microprofile.config.tck.ConfigProviderTest">
+        <class name="org.eclipse.microprofile.config.tck.broken.MissingValueOnInstanceInjectionTest">
             <methods>
                 <include name=".*"/>
             </methods>
