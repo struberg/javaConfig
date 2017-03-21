@@ -20,6 +20,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -58,8 +59,9 @@ public class ConfigExtension implements Extension {
                 .map(ip -> (Class) ip.getType())
                 .collect(Collectors.toSet());
 
-        // Provider is a ParameterizedType and not a Class, so we need to add it manually
+        // Provider and Optional are ParameterizedTypes and not a Class, so we need to add them manually
         types.add(Provider.class);
+        types.add(Optional.class);
 
         types.forEach(type -> abd.addBean(new ConfigInjectionBean(bm, type)));
     }

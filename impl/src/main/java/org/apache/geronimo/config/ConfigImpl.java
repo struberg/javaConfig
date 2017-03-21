@@ -43,11 +43,13 @@ import org.apache.geronimo.config.converters.LongConverter;
 
 import javax.annotation.Priority;
 import javax.enterprise.inject.Typed;
+import javax.enterprise.inject.Vetoed;
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
 @Typed
+@Vetoed
 public class ConfigImpl implements Config {
     protected Logger logger = Logger.getLogger(ConfigImpl.class.getName());
 

@@ -17,6 +17,7 @@
 package org.apache.geronimo.config.converters;
 
 import javax.annotation.Priority;
+import javax.enterprise.inject.Vetoed;
 
 import org.eclipse.microprofile.config.spi.Converter;
 
@@ -26,6 +27,7 @@ import org.eclipse.microprofile.config.spi.Converter;
  * @author <a href="mailto:struberg@yahoo.de">Mark Struberg</a>
  */
 @Priority(1)
+@Vetoed
 public class StringConverter implements Converter<String> {
 
     public static final StringConverter INSTANCE = new StringConverter();

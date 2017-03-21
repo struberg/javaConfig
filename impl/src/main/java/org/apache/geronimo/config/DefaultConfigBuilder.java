@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.ServiceLoader;
 
 import javax.enterprise.inject.Typed;
+import javax.enterprise.inject.Vetoed;
 
 import static java.util.Arrays.asList;
 
@@ -39,6 +40,7 @@ import static java.util.Arrays.asList;
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
 @Typed
+@Vetoed
 public class DefaultConfigBuilder implements ConfigBuilder {
     protected ClassLoader forClassLoader;
     private final List<ConfigSource> sources = new ArrayList<>();

@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.enterprise.inject.Typed;
+import javax.enterprise.inject.Vetoed;
+
 import org.eclipse.microprofile.config.spi.ConfigSource;
 import org.eclipse.microprofile.config.spi.ConfigSourceProvider;
 
@@ -36,6 +39,8 @@ import org.eclipse.microprofile.config.spi.ConfigSourceProvider;
  *
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
+@Typed
+@Vetoed
 public class PropertyFileConfigSourceProvider implements ConfigSourceProvider {
     private static final Logger LOG = Logger.getLogger(PropertyFileConfigSourceProvider.class.getName());
 

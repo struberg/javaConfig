@@ -19,11 +19,13 @@ package org.apache.geronimo.config.converters;
 import org.eclipse.microprofile.config.spi.Converter;
 
 import javax.annotation.Priority;
+import javax.enterprise.inject.Vetoed;
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
 @Priority(1)
+@Vetoed
 public class BooleanConverter implements Converter<Boolean> {
 
     public static final BooleanConverter INSTANCE = new BooleanConverter();

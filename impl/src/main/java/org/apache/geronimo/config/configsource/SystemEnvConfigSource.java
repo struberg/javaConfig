@@ -21,6 +21,9 @@ package org.apache.geronimo.config.configsource;
 
 import java.util.Map;
 
+import javax.enterprise.inject.Typed;
+import javax.enterprise.inject.Vetoed;
+
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 /**
@@ -31,6 +34,8 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
  *
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
+@Typed
+@Vetoed
 public class SystemEnvConfigSource extends BaseConfigSource {
     private Map<String, String> configValues;
 

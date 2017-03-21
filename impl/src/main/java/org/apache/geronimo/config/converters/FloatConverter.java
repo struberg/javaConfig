@@ -17,6 +17,7 @@
 package org.apache.geronimo.config.converters;
 
 import javax.annotation.Priority;
+import javax.enterprise.inject.Vetoed;
 
 import org.eclipse.microprofile.config.spi.Converter;
 
@@ -24,6 +25,7 @@ import org.eclipse.microprofile.config.spi.Converter;
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
 @Priority(1)
+@Vetoed
 public class FloatConverter implements Converter<Float> {
 
     public static final FloatConverter INSTANCE = new FloatConverter();

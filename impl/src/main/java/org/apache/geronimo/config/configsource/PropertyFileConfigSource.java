@@ -22,9 +22,14 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.enterprise.inject.Typed;
+import javax.enterprise.inject.Vetoed;
+
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
+@Typed
+@Vetoed
 public class PropertyFileConfigSource extends BaseConfigSource {
     private Map<String, String> properties;
     private String fileName;
