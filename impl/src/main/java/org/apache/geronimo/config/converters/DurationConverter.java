@@ -16,33 +16,33 @@
  */
 package org.apache.geronimo.config.converters;
 
-import org.eclipse.microprofile.config.spi.Converter;
+import java.time.Duration;
+import java.time.format.DateTimeParseException;
 
 import javax.annotation.Priority;
 import javax.enterprise.inject.Vetoed;
+
+import org.eclipse.microprofile.config.spi.Converter;
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
 @Priority(1)
 @Vetoed
-public class BooleanConverter implements Converter<Boolean> {
+public class DurationConverter implements Converter<Duration> {
 
-    public static final BooleanConverter INSTANCE = new BooleanConverter();
+    public static final DurationConverter INSTANCE = new DurationConverter();
 
     @Override
-    public Boolean convert(String value) {
+    public Duration convert(String value) {
         if (value != null) {
-            return "TRUE".equalsIgnoreCase(value)
-                || "1".equalsIgnoreCase(value)
-                || "YES".equalsIgnoreCase(value)
-                || "Y".equalsIgnoreCase(value)
-                || "ON".equalsIgnoreCase(value)
-                || "JA".equalsIgnoreCase(value)
-                || "J".equalsIgnoreCase(value)
-                || "OUI".equalsIgnoreCase(value);
+            try {
+                return Duration.parse(value);
+            }
+            catch (DateTimeParseException dtpe) {
+                throw new IllegalArgumentException(dtpe);
+            }
         }
-
         return null;
     }
 }

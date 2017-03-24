@@ -16,33 +16,33 @@
  */
 package org.apache.geronimo.config.converters;
 
-import org.eclipse.microprofile.config.spi.Converter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 
 import javax.annotation.Priority;
 import javax.enterprise.inject.Vetoed;
+
+import org.eclipse.microprofile.config.spi.Converter;
 
 /**
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
  */
 @Priority(1)
 @Vetoed
-public class BooleanConverter implements Converter<Boolean> {
+public class LocalDateTimeConverter implements Converter<LocalDateTime> {
 
-    public static final BooleanConverter INSTANCE = new BooleanConverter();
+    public static final LocalDateTimeConverter INSTANCE = new LocalDateTimeConverter();
 
     @Override
-    public Boolean convert(String value) {
+    public LocalDateTime convert(String value) {
         if (value != null) {
-            return "TRUE".equalsIgnoreCase(value)
-                || "1".equalsIgnoreCase(value)
-                || "YES".equalsIgnoreCase(value)
-                || "Y".equalsIgnoreCase(value)
-                || "ON".equalsIgnoreCase(value)
-                || "JA".equalsIgnoreCase(value)
-                || "J".equalsIgnoreCase(value)
-                || "OUI".equalsIgnoreCase(value);
+            try {
+                return LocalDateTime.parse(value);
+            } 
+            catch (DateTimeParseException dtpe) {
+                throw new IllegalArgumentException(dtpe);
+            }
         }
-
         return null;
     }
 }

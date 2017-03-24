@@ -18,6 +18,10 @@ package org.apache.geronimo.config;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -31,6 +35,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.geronimo.config.converters.DurationConverter;
+import org.apache.geronimo.config.converters.LocalDateConverter;
+import org.apache.geronimo.config.converters.LocalDateTimeConverter;
+import org.apache.geronimo.config.converters.LocalTimeConverter;
 import org.apache.geronimo.config.converters.StringConverter;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigSource;
@@ -68,6 +76,11 @@ public class ConfigImpl implements Config {
         converters.put(Float.class, FloatConverter.INSTANCE);
         converters.put(Integer.class, IntegerConverter.INSTANCE);
         converters.put(Long.class, LongConverter.INSTANCE);
+
+        converters.put(Duration.class, DurationConverter.INSTANCE);
+        converters.put(LocalTime.class, LocalTimeConverter.INSTANCE);
+        converters.put(LocalDate.class, LocalDateConverter.INSTANCE);
+        converters.put(LocalDateTime.class, LocalDateTimeConverter.INSTANCE);
     }
 
 
