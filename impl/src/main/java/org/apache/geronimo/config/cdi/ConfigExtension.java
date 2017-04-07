@@ -35,6 +35,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessInjectionPoint;
 import javax.inject.Provider;
 
+import org.apache.geronimo.config.DefaultConfigProvider;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -43,6 +44,8 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
  * @author <a href="mailto:struberg@yahoo.de">Mark Struberg</a>
  */
 public class ConfigExtension implements Extension {
+
+    private Config config;
 
     private Set<InjectionPoint> injectionPoints = new HashSet<>();
 
@@ -69,7 +72,7 @@ public class ConfigExtension implements Extension {
     public void validate(@Observes AfterDeploymentValidation add) {
         List<String> deploymentProblems = new ArrayList<>();
 
-        Config config = ConfigProvider.getConfig();
+        config = ConfigProvider.getConfig();
 
         for (InjectionPoint injectionPoint : injectionPoints) {
             Type type = injectionPoint.getType();
@@ -92,7 +95,7 @@ public class ConfigExtension implements Extension {
     }
 
     public void shutdown(@Observes BeforeShutdown bsd) {
-        //X TODO shutdown config
+        DefaultConfigProvider.instance().releaseConfig(config);
     }
 
 

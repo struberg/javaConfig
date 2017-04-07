@@ -43,12 +43,9 @@ public class DefaultConfigProvider extends ConfigProviderResolver {
 
     @Override
     public Config getConfig() {
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        if (cl == null) {
-            cl = DefaultConfigProvider.class.getClassLoader();
-        }
-        return getConfig(cl);
+        return getConfig(null);
     }
+
 
     @Override
     public Config getConfig(ClassLoader forClassLoader) {
@@ -58,7 +55,7 @@ public class DefaultConfigProvider extends ConfigProviderResolver {
             synchronized (DefaultConfigProvider.class) {
                 config = existingConfig(forClassLoader);
                 if (config == null) {
-                    config = getBuilder().forClassLoader(forClassLoader).addDefaultSources().build();
+                    config = getBuilder().forClassLoader(forClassLoader).addDefaultSources().addDiscoveredSources().build();
                     registerConfig(config, forClassLoader);
                 }
             }
@@ -87,6 +84,15 @@ public class DefaultConfigProvider extends ConfigProviderResolver {
 
     @Override
     public void releaseConfig(Config config) {
+        if (config == null) {
+            // get the config from the current TCCL
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            if (classLoader == null) {
+                classLoader = DefaultConfigProvider.class.getClassLoader();
+            }
+            config = existingConfig(classLoader);
+        }
+
         if (config != null) {
             synchronized (DefaultConfigProvider.class) {
                 Iterator<Map.Entry<ClassLoader, WeakReference<Config>>> it = configs.entrySet().iterator();

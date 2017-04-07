@@ -46,10 +46,17 @@ public class DefaultConfigBuilder implements ConfigBuilder {
     private final List<ConfigSource> sources = new ArrayList<>();
     private final List<Converter<?>> converters = new ArrayList<>();
     private boolean ignoreDefaultSources = true;
+    private boolean ignoreDiscoveredSources = true;
 
     @Override
     public ConfigBuilder addDefaultSources() {
         this.ignoreDefaultSources = false;
+        return this;
+    }
+
+    @Override
+    public ConfigBuilder addDiscoveredSources() {
+        this.ignoreDiscoveredSources = false;
         return this;
     }
 
@@ -74,13 +81,19 @@ public class DefaultConfigBuilder implements ConfigBuilder {
     @Override
     public Config build() {
         List<ConfigSource> configSources = new ArrayList<>();
+         if (forClassLoader == null) {
+             forClassLoader = Thread.currentThread().getContextClassLoader();
+             if (forClassLoader == null) {
+                 forClassLoader = DefaultConfigProvider.class.getClassLoader();
+             }
+         }
 
         if (!ignoreDefaultSources) {
             configSources.addAll(getBuiltInConfigSources(forClassLoader));
         }
         configSources.addAll(sources);
 
-        if (!ignoreDefaultSources) {
+        if (!ignoreDiscoveredSources) {
             // load all ConfigSource services
             ServiceLoader<ConfigSource> configSourceLoader = ServiceLoader.load(ConfigSource.class, forClassLoader);
             configSourceLoader.forEach(configSource -> configSources.add(configSource));
