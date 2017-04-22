@@ -19,46 +19,28 @@
 
 ## Status
 
-Microprofile proposal!
+The content of this repository is OUTDATED!
 
-== Rational
+Please go to the Apache Geronimo Config project for further information.
 
-Many project artifacts (e.g. WAR, EAR) should only be created once and then get installed at different customers, stages, etc
-They need to target those different execution environments without necessity of any repackaging.
-In other words: depending on the situation they need different configuration.
-
-This is easily achievable by having a set of default configuration values inside the project artifact.
-But be able to overwrite those default values from external.
+$> svn co https://svn.apache.org/repos/asf/geronimo/components/config/trunk
 
 == History
 
-This very configuration approach has it's roots in the Apache OpenWebBeans internal SPI configuration.
-In 2010 it got moved over to the Apache MyFaces CODI project and enhanced to also fit the need of customer projects by Gerhard Petracek and Mark Struberg.
-In 2011 we further enhanced it while moving CODI to the Apache DeltaSpike project.
-Romain Manni-Bucau (Apache/Tomitribe), Ron Smeral (JBoss) and Anatole Tresch also gave appreciated input in the last years.
+This repository contains the original MicroProfile Config proposal and a Config JSR proposal based on the concepts Gerhard and I created in Apache OpenWebBeans, CODI and DeltaSpike.
+See the separate branches for more info.
 
-== How it works
+== The Config API
 
-A 'Configuration' consists of the information collected from the registered `javax.config.spi.ConfigSource` s.
-These `ConfigSource`s get sorted according to their _ordinal_.
-That way it is possible to overwrite configuration with lower importance from outside.
+The API later got moved to the MicroProfile repository which itself later moved under the Eclipse umbrella.
+It now can be found at
 
-By default there are 3 default ConfigSources:
+https://github.com/eclipse/microprofile-config/
 
-* `System.getenv()` (ordinal=400)
-* `System.getProperties()` (ordinal=300)
-* all `META-INF/microprofile-config.properties` files on the ClassPath. (ordinal=100, separately configurable via a config_ordinal property inside each file)
 
-That means that I can put my default configuration in a `META-INF/microprofile-config.properties` anywhere on the classpath.
-And I can later simply e.g set a system property to change this default configuration.
+== The Config IMPL
 
-== Custom ConfigSources
+The implementation of MicroProfile Config can be found at the Apache Geronimo Project.
 
-It is possible to write and register custom `ConfigSource` s.
-An example would be a ConfigSource which gets the configured values from a shared database table in a cluster.
-
-== Building
-
-`$> mvn clean install`
-
-After that the specification PDF can be found in `spec/target/generated-docs/microprofile-config-spec.pdf`
+$> svn co https://svn.apache.org/repos/asf/geronimo/components/config/trunk
+ 
